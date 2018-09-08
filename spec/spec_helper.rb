@@ -11,3 +11,5 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
+
+Dir["#{__dir__}/support/**/*.rb"].each(&method(:require))
