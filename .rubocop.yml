@@ -1,0 +1,27 @@
+---
+AllCops:
+  TargetRubyVersion: 2.5
+  Exclude:
+    - ansible/**/*
+    - tmp/**/*
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - spec/**/*_spec.rb
+
+Metrics/BlockLength:
+  Exclude:
+    - db/migrations/*
+    - spec/**/*_spec.rb
+    - spec/factories/**/*
+    - spec/shared/**/*
+    - Vagrantfile
+
+Naming/UncommunicativeMethodParamName:
+  AllowedNames:
+    - db
+    - to
+    - id
+
+Style/Documentation:
+  Enabled: false

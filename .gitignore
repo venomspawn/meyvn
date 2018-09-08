@@ -1,0 +1,6 @@
+.irb_history
+.vagrant
+.yardoc
+ansible/roles
+doc
+tmp
