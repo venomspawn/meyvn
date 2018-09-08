@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
 ENV['RAILS_ENV'] ||= 'test'
 
 require File.expand_path('../config/environment', __dir__)
 
-require 'rspec/rails'
+require 'spec_helper'
 
-begin
-  ActiveRecord::Migration.maintain_test_schema!
-rescue ActiveRecord::PendingMigrationError => e
-  puts e.to_s.strip
-  exit 1
-end
+require 'rspec/rails'

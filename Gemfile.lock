@@ -47,6 +47,7 @@ GEM
     arel (9.0.0)
     ast (2.4.0)
     awesome_print (1.8.0)
+    bcrypt (3.1.12)
     builder (3.2.3)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
@@ -169,6 +170,7 @@ PLATFORMS
 
 DEPENDENCIES
   awesome_print
+  bcrypt
   database_cleaner
   dotenv-rails
   factory_bot

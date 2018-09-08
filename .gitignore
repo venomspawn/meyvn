@@ -3,4 +3,5 @@
 .yardoc
 ansible/roles
 doc
+log
 tmp
