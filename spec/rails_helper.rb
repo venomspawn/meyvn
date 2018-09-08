@@ -4,7 +4,7 @@ require 'spec_helper'
 
 ENV['RAILS_ENV'] ||= 'test'
 
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 
 require 'rspec/rails'
 
@@ -13,8 +13,4 @@ begin
 rescue ActiveRecord::PendingMigrationError => e
   puts e.to_s.strip
   exit 1
-end
-
-RSpec.configure do |config|
-  config.filter_rails_from_backtrace!
 end
