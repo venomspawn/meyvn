@@ -2,6 +2,7 @@
 
 source 'https://rubygems.org'
 
+gem 'bcrypt'
 gem 'dotenv-rails'
 gem 'json-schema'
 gem 'pg'
