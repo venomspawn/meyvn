@@ -5,7 +5,7 @@ debug:
 	bundle exec bin/rails console
 
 test:
-	bundle exec rspec --fail-fast
+	RAILS_ENV=test bundle exec rspec --fail-fast
 
 .PHONY: doc
 doc:
