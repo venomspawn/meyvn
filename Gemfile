@@ -2,9 +2,10 @@
 
 source 'https://rubygems.org'
 
-gem 'dotenv'
+gem 'dotenv-rails'
 gem 'json-schema'
 gem 'pg'
+gem 'puma'
 gem 'rails'
 gem 'rake'
 
