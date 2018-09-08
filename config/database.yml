@@ -1,0 +1,16 @@
+---
+default: &default
+  adapter: postgresql
+  user: <%= ENV['MEYVN_DB_USER'] %>
+  password: "<%= ENV['MEYVN_DB_PASS'] %>"
+  host: <%= ENV['MEYVN_DB_HOST'] %>
+  database: <%= ENV['MEYVN_DB_NAME'] %>
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default
