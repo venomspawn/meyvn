@@ -10,4 +10,52 @@ RSpec.describe 'Sessions REST API', type: :request do
 
     it { is_expected.to render_template('sessions/new') }
   end
+
+  describe 'POST /login' do
+    before { post '/login', params: params }
+
+    subject { response }
+
+    let(:params) { { login: { email: email, password: password } } }
+    let(:email) { create(:email) }
+    let(:password) { create(:string) }
+
+    context 'when identification is failed' do
+      it { is_expected.to have_http_status(:ok) }
+
+      it { is_expected.to render_template('sessions/new') }
+
+      describe 'response body' do
+        subject { response.body }
+
+        it 'should include a message about wrong email or password' do
+          expect(subject).to include('Wrong email or password')
+        end
+      end
+    end
+
+    context 'when authentication is failed' do
+      let!(:user) { create(:user, email: email, password: create(:string)) }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it { is_expected.to render_template('sessions/new') }
+
+      describe 'response body' do
+        subject { response.body }
+
+        it 'should include a message about wrong email or password' do
+          expect(subject).to include('Wrong email or password')
+        end
+      end
+    end
+
+    context 'when identification and authentication are successful' do
+      let(:email) { user.email }
+      let(:password) { user.password }
+      let(:user) { create(:user) }
+
+      it { is_expected.to redirect_to root_url }
+    end
+  end
 end
