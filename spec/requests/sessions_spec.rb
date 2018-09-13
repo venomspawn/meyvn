@@ -58,4 +58,16 @@ RSpec.describe 'Sessions REST API', type: :request do
       it { is_expected.to redirect_to root_url }
     end
   end
+
+  describe 'POST /logout' do
+    before { post '/logout' }
+
+    subject { response }
+
+    it { is_expected.to redirect_to root_url }
+
+    it 'should set `user_id` attribute of session to `nil`' do
+      expect(session[:user_id]).to be_nil
+    end
+  end
 end

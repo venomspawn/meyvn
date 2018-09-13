@@ -17,26 +17,35 @@ class SessionsController < ApplicationController
     end
   end
 
+  # Message on successful log out
+  LOGOUT_SUCCESS = 'Logged out successfully'
+
+  # Handles POST-request with `/logout` path
+  def destroy
+    session.delete(:user_id)
+    redirect_to root_path, notice: LOGOUT_SUCCESS
+  end
+
   private
 
   # Message on failed log in
-  FAIL = 'Wrong email or password'
+  LOGIN_FAIL = 'Wrong email or password'
 
-  # Adds {FAIL} alert to flash and renders log in form
+  # Adds {LOGIN_FAIL} alert to flash and renders log in form
   def flash_log_in_fail
-    flash.now.alert = FAIL
+    flash.now.alert = LOGIN_FAIL
     render :new
   end
 
   # Message on successful log in
-  SUCCESS = 'Logged in successfully'
+  LOGIN_SUCCESS = 'Logged in successfully'
 
-  # Creates session for identified and authentified user, flashes {SUCCESS}
+  # Creates session for identified and authentified user, flashes {LOGIN_SUCCESS}
   # notice and redirects to root path
   # @param [User] user
   #   user record
   def create_session(user)
     session[:user_id] = user.id
-    redirect_to root_path, notice: SUCCESS
+    redirect_to root_path, notice: LOGIN_SUCCESS
   end
 end
