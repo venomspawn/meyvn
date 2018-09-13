@@ -33,6 +33,7 @@ class SessionsController < ApplicationController
 
   # Adds {LOGIN_FAIL} alert to flash and renders log in form
   def flash_log_in_fail
+    session.delete(:user_id)
     flash.now.alert = LOGIN_FAIL
     render :new
   end
@@ -40,8 +41,8 @@ class SessionsController < ApplicationController
   # Message on successful log in
   LOGIN_SUCCESS = 'Logged in successfully'
 
-  # Creates session for identified and authentified user, flashes {LOGIN_SUCCESS}
-  # notice and redirects to root path
+  # Creates session for identified and authentified user, flashes
+  # {LOGIN_SUCCESS} notice and redirects to root path
   # @param [User] user
   #   user record
   def create_session(user)

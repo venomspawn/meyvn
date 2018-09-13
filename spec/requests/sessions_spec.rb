@@ -32,6 +32,10 @@ RSpec.describe 'Sessions REST API', type: :request do
           expect(subject).to include('Wrong email or password')
         end
       end
+
+      it 'should set `user_id` attribute of session to `nil`' do
+        expect(session[:user_id]).to be_nil
+      end
     end
 
     context 'when authentication is failed' do
@@ -48,6 +52,10 @@ RSpec.describe 'Sessions REST API', type: :request do
           expect(subject).to include('Wrong email or password')
         end
       end
+
+      it 'should set `user_id` attribute of session to `nil`' do
+        expect(session[:user_id]).to be_nil
+      end
     end
 
     context 'when identification and authentication are successful' do
@@ -56,6 +64,10 @@ RSpec.describe 'Sessions REST API', type: :request do
       let(:user) { create(:user) }
 
       it { is_expected.to redirect_to root_url }
+
+      it 'should set `user_id` attribute of session to user id' do
+        expect(session[:user_id]).to be == user.id
+      end
     end
   end
 
