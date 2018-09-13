@@ -21,7 +21,7 @@ end
 
 group :test do
   gem 'database_cleaner'
-  gem 'rack-test'
+  gem 'rails-controller-testing'
   gem 'rspec'
   gem 'rspec-rails'
   gem 'rubocop'

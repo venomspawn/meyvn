@@ -14,7 +14,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
         execute <<-SQL
           ALTER TABLE users
             ADD CONSTRAINT users_email_format_check
-            CHECK (email ~ '\\A\\w+@[\\w.]+\\Z');
+            CHECK (email ~ '\\A[\\w._-]+@[\\w._-]+\\Z');
 
           CREATE UNIQUE INDEX users_lower_email_unique_key
             ON users (lower(email))

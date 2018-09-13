@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Meyvn</title>
+    <title>Implementation of Meyvn's test service</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
-    <%= stylesheet_link_tag    'application', media: 'all' %>
   </head>
+
+  <% if current_user.nil? %>
+    <table>
+      <tr>
+        <td><%= button_to 'Root', root_path, method: :get %></td>
+        <td><%= button_to 'Log In', login_path, method: :get %></td>
+        <td><%= button_to 'Sign Up', new_user_path, method: :get %></td>
+      </tr>
+    </table>
+  <% else %>
+    <table>
+      <tr>
+        <td><%= current_user.email %></td>
+        <td><%= button_to 'Root', root_path, method: :get %></td>
+        <td><%= button_to 'Log Out', logout_path %></td>
+      </tr>
+    </table>
+  <% end %>
+
+  <% if notice %>
+    <%= notice %>
+  <% end %>
+
+  <% if alert %>
+    <%= alert %>
+  <% end %>
 
   <body>
     <%= yield %>
