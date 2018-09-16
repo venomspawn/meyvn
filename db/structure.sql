@@ -72,6 +72,16 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: topics; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.topics (
+    id uuid DEFAULT public.gen_random_uuid() NOT NULL,
+    title text NOT NULL
+);
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -108,6 +118,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: topics topics_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.topics
+    ADD CONSTRAINT topics_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -120,6 +138,13 @@ ALTER TABLE ONLY public.users
 --
 
 CREATE UNIQUE INDEX cities_lower_name_unique_key ON public.cities USING btree (lower(name));
+
+
+--
+-- Name: topics_lower_title_unique_key; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE UNIQUE INDEX topics_lower_title_unique_key ON public.topics USING btree (lower(title));
 
 
 --
@@ -138,6 +163,7 @@ SET search_path TO "$user",public;
 INSERT INTO "schema_migrations" (version) VALUES
 ('20180908124326'),
 ('20180908125414'),
-('20180914062139');
+('20180914062139'),
+('20180916081935');
 
 
