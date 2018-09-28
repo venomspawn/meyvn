@@ -18,13 +18,7 @@ module EventLogic
             start: {
               type: %i[null string]
             }
-          },
-          required: %i[
-            city_id
-            topic_id
-            start
-          ],
-          additionalProperties: false
+          }
         }
       }
     }.freeze
