@@ -18,7 +18,7 @@ RSpec.describe EventLogic do
       subject { result }
 
       let(:params) { {} }
-      let!(:future_events) { create_list(:event, 2) }
+      let!(:future_events) { create_list(:event, 2, start: Time.now + 1) }
       let(:future_titles) { future_events.map(&:title) }
       let!(:past_event) { create(:event, start: Time.now - 1) }
 
