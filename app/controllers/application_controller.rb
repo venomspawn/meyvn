@@ -18,4 +18,12 @@ class ApplicationController < ActionController::Base
   end
 
   helper_method :current_user
+
+  # Message about that authentication is required
+  AUTH_REQUIRED = 'Authentication is required to access the page'
+
+  # Redirects to login page if the session lacks authenticated user
+  def auth
+    redirect_to login_path, alert: AUTH_REQUIRED if current_user.nil?
+  end
 end
