@@ -26,4 +26,15 @@ class ApplicationController < ActionController::Base
   def auth
     redirect_to login_path, alert: AUTH_REQUIRED if current_user.nil?
   end
+
+  # Returns yielded value or provided default value if an exception is raised
+  # @return [Object]
+  #   resulting value
+  def yield_safely(default = nil)
+    yield
+  rescue StandardError
+    default
+  end
+
+  helper_method :yield_safely
 end

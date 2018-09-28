@@ -1,1 +1,35 @@
 <h1>Events</h1>
+
+<% city_id  = yield_safely { filter[:city] } %>
+<% topic_id = yield_safely { filter[:topic] } %>
+<% start    = yield_safely { filter[:start] } %>
+
+<%= form_for(:filter, url: '/events', method: :get) do |form| %>
+  <div>
+    <%= form.label :city %>
+    <%= form.select :city do %>
+      <%= content_tag :option, '', selected: city_id.nil? %>
+      <% City.order(:name).each do |city| %>
+        <% options = { value: city.id, selected: city.id == city_id } %>
+        <%= content_tag :option, city.name, options %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.label :topic %>
+    <%= form.select :topic do %>
+      <%= content_tag :option, '', selected: topic_id.nil? %>
+      <% Topic.order(:title).each do |topic| %>
+        <% options = { value: topic.id, selected: topic.id == topic_id } %>
+        <%= content_tag :option, topic.title, options %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.label :start %>
+    <%= form.datetime_field :start, value: start %>
+  </div>
+  <div>
+    <%= form.submit 'Refresh' %>
+  </div>
+<% end %>
