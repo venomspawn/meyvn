@@ -7,6 +7,6 @@ class EventsController < ApplicationController
   # Handles GET-request with `/events` path
   def index
     events = EventLogic.index(params.to_unsafe_hash)
-    render :index, local: { events: events, filter: params[:filter] }
+    render :index, locals: { events: events, filter: params[:filter] }
   end
 end
