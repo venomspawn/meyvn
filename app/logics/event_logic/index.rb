@@ -113,22 +113,22 @@ module EventLogic
     CITY_ID_CONDITION_TEMPLATE = '"cities"."id" = \'%s\''
 
     # Returns string with condition on city identifier or `nil` if city
-    # identifier is absent or `nil`
+    # identifier is absent or blank
     # @return [NilClass, String]
     #   resulting value
     def city_id_condition
-      city_id && format(CITY_ID_CONDITION_TEMPLATE, city_id)
+      format(CITY_ID_CONDITION_TEMPLATE, city_id) if city_id.present?
     end
 
     # Template of condition on topic identifier
     TOPIC_ID_CONDITION_TEMPLATE = '"topics"."id" = \'%s\''
 
     # Returns string with condition on topic identifier or `nil` if topic
-    # identifier is absent or `nil`
+    # identifier is absent or blank
     # @return [NilClass, String]
     #   resulting value
     def topic_id_condition
-      topic_id && format(TOPIC_ID_CONDITION_TEMPLATE, topic_id)
+      format(TOPIC_ID_CONDITION_TEMPLATE, topic_id) if topic_id.present?
     end
 
     # Template of condition on events start date and time
