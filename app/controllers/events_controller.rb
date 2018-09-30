@@ -34,7 +34,8 @@ class EventsController < ApplicationController
 
   # Handles Get-request with `/events/new` path
   def new
-    render :new
+    event = Event.new
+    render :new, locals: { event: event }
   end
 
   private
