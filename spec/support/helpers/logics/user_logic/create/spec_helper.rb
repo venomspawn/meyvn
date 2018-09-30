@@ -6,7 +6,7 @@ module UserLogic
     module SpecHelper
       # Returns associative array of business logic parameters made from
       # arguments
-      # @return [Hash]
+      # @return [ActiveSupport::HashWithIndifferentAccess]
       #   resulting associative array
       def create_params(email, password, password_confirmation)
         params = {
