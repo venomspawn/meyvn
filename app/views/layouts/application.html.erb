@@ -6,8 +6,18 @@
     <%= csp_meta_tag %>
   </head>
 
+  <style>
+    table#header {
+      border: 0px;
+    }
+
+    table#header td {
+      border: 0px;
+    }
+  </style>
+
   <% if current_user.nil? %>
-    <table>
+    <table id="header">
       <tr>
         <td><%= button_to 'Root', root_path, method: :get %></td>
         <td><%= button_to 'Log In', login_path, method: :get %></td>
@@ -15,7 +25,7 @@
       </tr>
     </table>
   <% else %>
-    <table>
+    <table id="header">
       <tr>
         <td><%= current_user.email %></td>
         <td><%= button_to 'Root', root_path, method: :get %></td>

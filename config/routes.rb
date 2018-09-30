@@ -9,4 +9,8 @@ Rails.application.routes.draw do
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   post '/logout' => 'sessions#destroy'
+
+  post '/events' => 'events#create'
+  get '/events' => 'events#index'
+  get '/events/new' => 'events#new'
 end

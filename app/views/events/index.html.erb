@@ -1,0 +1,75 @@
+<h1>Events</h1>
+
+<% city_id  = yield_safely { filter[:city_id] } %>
+<% topic_id = yield_safely { filter[:topic_id] } %>
+<% start    = yield_safely { filter[:start] } %>
+
+<%= form_for(:filter, url: '/events', method: :get) do |form| %>
+  <div>
+    <%= form.label :city %>
+    <%= form.select :city_id do %>
+      <%= content_tag :option, '', selected: city_id.nil? %>
+      <% City.order(:name).each do |city| %>
+        <% options = { value: city.id, selected: city.id == city_id } %>
+        <%= content_tag :option, city.name, options %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.label :topic %>
+    <%= form.select :topic_id do %>
+      <%= content_tag :option, '', selected: topic_id.nil? %>
+      <% Topic.order(:title).each do |topic| %>
+        <% options = { value: topic.id, selected: topic.id == topic_id } %>
+        <%= content_tag :option, topic.title, options %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.label :start %>
+    <%= form.datetime_field :start, value: start %>
+  </div>
+  <div>
+    <%= form.submit 'Refresh' %>
+  </div>
+<% end %>
+
+<style>
+  table#events {
+    width: 50%;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+  table#events th, td {
+    text-align: center;
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+</style>
+
+<%
+  columns = {
+    event_title:  'Event',
+    city_name:    'City',
+    event_place:  'Place',
+    topic_title:  'Topic',
+    event_start:  'Start',
+    event_finish: 'Finish'
+  }
+%>
+
+<table id="events">
+  <tr>
+    <% columns.each_value do |header| %>
+      <th><%= header %></th>
+    <% end %>
+  </tr>
+  <% events.each do |event| %>
+    <tr>
+      <% columns.each_key do |column| %>
+        <td><%= event[column] %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>

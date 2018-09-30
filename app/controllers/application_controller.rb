@@ -18,4 +18,23 @@ class ApplicationController < ActionController::Base
   end
 
   helper_method :current_user
+
+  # Message about that authentication is required
+  AUTH_REQUIRED = 'Authentication is required to access the page'
+
+  # Redirects to login page if the session lacks authenticated user
+  def auth
+    redirect_to login_path, alert: AUTH_REQUIRED if current_user.nil?
+  end
+
+  # Returns yielded value or provided default value if an exception is raised
+  # @return [Object]
+  #   resulting value
+  def yield_safely(default = nil)
+    yield
+  rescue StandardError
+    default
+  end
+
+  helper_method :yield_safely
 end
