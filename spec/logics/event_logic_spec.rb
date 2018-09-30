@@ -6,7 +6,64 @@ RSpec.describe EventLogic do
   describe 'the module' do
     subject { described_class }
 
-    it { is_expected.to respond_to(:index) }
+    it { is_expected.to respond_to(:create, :index) }
+  end
+
+  describe '.create' do
+    include described_class::Create::SpecHelper
+
+    subject(:result) { described_class.create(params) }
+
+    let(:params) { create_params }
+
+    describe 'result' do
+      subject { result }
+
+      it { is_expected.to be_an(Event) }
+
+      context 'when parameters are correct' do
+        it 'should be saved' do
+          expect(result.saved_changes?).to be_truthy
+        end
+
+        describe '#errors' do
+          subject { result.errors }
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'when finish is less than start or equals it' do
+        let(:params) { create_params(false) }
+
+        it 'should not be saved' do
+          expect(result.saved_changes?).to be_falsey
+        end
+
+        describe '#errors' do
+          subject { result.errors }
+
+          it 'should include a message about the error' do
+            expect(subject.messages[:finish])
+              .to include('is less than start or equals it')
+          end
+        end
+      end
+    end
+
+    context 'when parameters are correct' do
+      it 'should create new record' do
+        expect { subject }.to change { User.count }.by(1)
+      end
+    end
+
+    context 'when parameters are of wrong structure' do
+      let(:params) { { of: %w[wrong structure] } }
+
+      it 'should raise JSON::Schema::ValidationError' do
+        expect { subject }.to raise_error(JSON::Schema::ValidationError)
+      end
+    end
   end
 
   describe '.index' do
