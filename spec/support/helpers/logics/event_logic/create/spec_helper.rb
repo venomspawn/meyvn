@@ -20,8 +20,8 @@ module EventLogic
             finish:     finish.strftime('%FT%H:%M'),
             city_id:    FactoryBot.create(:city).id,
             topic_id:   FactoryBot.create(:topic).id,
-            creator_id: FactoryBot.create(:user).id,
-          }
+          },
+          creator_id: FactoryBot.create(:user).id
         }
         params.with_indifferent_access
       end

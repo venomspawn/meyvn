@@ -26,9 +26,6 @@ module EventLogic
             },
             topic_id: {
               type: :string
-            },
-            creator_id: {
-              type: :string
             }
           },
           required: %i[
@@ -38,12 +35,15 @@ module EventLogic
             finish
             city_id
             topic_id
-            creator_id
           ]
+        },
+        creator_id: {
+          type: :string
         }
       },
       required: %i[
         event
+        creator_id
       ]
     }.freeze
   end

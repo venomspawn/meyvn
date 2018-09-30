@@ -21,7 +21,7 @@ module EventLogic
     # @return [Hash]
     #   resulting associative array
     def creation_params
-      params[:event]
+      params[:event].dup.tap { |hash| hash[:creator_id] = params[:creator_id] }
     end
   end
 end
