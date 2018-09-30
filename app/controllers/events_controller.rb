@@ -4,6 +4,11 @@
 class EventsController < ApplicationController
   before_action :auth
 
+  # Handles Get-request with `/events/new` path
+  def new
+    render :new
+  end
+
   # Handles GET-request with `/events` path
   def index
     events = EventLogic.index(params.to_unsafe_hash)

@@ -1,0 +1,39 @@
+<h1>Add Event</h1>
+
+<%= form_for :event, url: '/event' do |form| %>
+  <div>
+    <%= form.label :title %>
+    <%= form.text_field :title %>
+  </div>
+  <div>
+    <%= form.label :place %>
+    <%= form.text_field :place %>
+  </div>
+  <div>
+    <%= form.label :start %>
+    <%= form.datetime_field :start %>
+  </div>
+  <div>
+    <%= form.label :finish %>
+    <%= form.datetime_field :finish %>
+  </div>
+  <div>
+    <%= form.label :city %>
+    <%= form.select :city_id do %>
+      <% City.order(:name).each do |city| %>
+        <%= content_tag :option, city.name, value: city.id %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.label :topic %>
+    <%= form.select :topic_id do %>
+      <% Topic.order(:title).each do |topic| %>
+        <%= content_tag :option, topic.title, value: topic.id %>
+      <% end %>
+    <% end %>
+  </div>
+  <div>
+    <%= form.submit 'Add' %>
+  </div>
+<% end %>
