@@ -8,7 +8,7 @@ RSpec.describe 'Sessions REST API', type: :request do
 
     it { is_expected.to have_http_status(:ok) }
 
-    it { is_expected.to render_template('sessions/new') }
+    it { is_expected.to render_template('sessions/login') }
   end
 
   describe 'POST /login' do
@@ -23,7 +23,7 @@ RSpec.describe 'Sessions REST API', type: :request do
     context 'when identification is failed' do
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('sessions/new') }
+      it { is_expected.to render_template('sessions/login') }
 
       describe 'response body' do
         subject { response.body }
@@ -43,7 +43,7 @@ RSpec.describe 'Sessions REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('sessions/new') }
+      it { is_expected.to render_template('sessions/login') }
 
       describe 'response body' do
         subject { response.body }
