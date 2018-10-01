@@ -3,14 +3,20 @@
 Rails.application.routes.draw do
   root to: 'sessions#new'
 
-  get 'users/new' => 'users#new', as: :new_user
-  post 'users' => 'users#create'
+  scope module: 'users' do
+    post 'users'     => 'creation#create'
+    get  'users/new' => 'new_page#draw', as: :new_user
+  end
 
-  get '/login' => 'sessions#new'
-  post '/login' => 'sessions#create'
-  post '/logout' => 'sessions#destroy'
+  scope module: 'sessions' do
+    get  '/login'  => 'login_page#draw'
+    post '/login'  => 'login#login'
+    post '/logout' => 'logout#logout'
+  end
 
-  post '/events' => 'events#create'
-  get '/events' => 'events#index'
-  get '/events/new' => 'events#new'
+  scope module: 'events' do
+    post '/events'     => 'creation#create'
+    get  '/events'     => 'index_page#draw'
+    get  '/events/new' => 'new_page#draw'
+  end
 end
