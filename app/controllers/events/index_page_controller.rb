@@ -10,7 +10,7 @@ module Events
 
     # Handles GET-request with `/events` path
     def draw
-      events = EventLogic.index(params.to_unsafe_hash)
+      events = Logics.index(params.to_unsafe_hash)
       render ERB, locals: { events: events, filter: params[:filter] }
     end
   end

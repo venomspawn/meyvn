@@ -19,7 +19,7 @@ module Users
 
     # Handles POST-request with `/users` path
     def create
-      UserLogic.create(request.request_parameters)
+      Logics.create(request.request_parameters)
       redirect_to root_path, notice: NOTICE
     end
 
