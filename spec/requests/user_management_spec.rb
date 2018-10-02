@@ -84,7 +84,17 @@ RSpec.describe 'User management REST API', type: :request do
     context 'when parameters are of wrong structure' do
       let(:params) { { of: %w[wrong structure] } }
 
-      it { is_expected.to have_http_status(:unprocessable_entity) }
+      it { is_expected.to have_http_status(:ok) }
+
+      it { is_expected.to render_template('users/new') }
+
+      describe 'response body' do
+        subject { response.body }
+
+        it 'should include a message about the error' do
+          expect(subject).to include('Invalid parameters')
+        end
+      end
     end
   end
 end

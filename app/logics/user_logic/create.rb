@@ -3,15 +3,14 @@
 module UserLogic
   # Class of business logic which creates new user record
   class Create < Base::Logic
-    # Tries to create new user record and returns instance of {User} with
-    # attributes of the record
-    # @return [User]
-    #   instance with attributes of the record
+    # Creates new user record
+    # @raise [ActiveRecord::RecordNotSaved]
+    #   if the record can't be created
     def create
       User.new(creation_params).tap do |user|
-        user.save
-      rescue ActiveRecord::RecordNotUnique
-        user.errors.add(:email, 'has already been taken')
+        user.save!
+      rescue StandardError => exception
+        raise_error(user, exception)
       end
     end
 
@@ -22,6 +21,23 @@ module UserLogic
     #   resulting associative array
     def creation_params
       params[:user]
+    end
+
+    # Raises proper error based on the provided information on exception
+    # @param [User] user
+    #   user record
+    # @param [Exception] exception
+    #   object with information on exception
+    def raise_error(user, exception)
+      case exception
+      when ActiveRecord::RecordInvalid
+        message = user.errors.full_messages.first
+        raise ActiveRecord::RecordNotSaved.new(message, user)
+      when ActiveRecord::RecordNotUnique
+        raise Errors::Email::AlreadyTaken, user
+      else
+        raise Errors::CreationParams::Invalid, user
+      end
     end
   end
 end
