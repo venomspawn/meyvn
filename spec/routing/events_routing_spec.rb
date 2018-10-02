@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Routing for events REST API', type: :routing do
   it 'routes POST /events to events/creation#create' do
     expect(post '/events')

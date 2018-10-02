@@ -5,46 +5,53 @@ module Events
   class CreationController < ApplicationController
     before_action :auth
 
+    # Message about invalid parameters
+    INVALID_PARAMETERS = 'Invalid parameters'
+
+    rescue_from JSON::Schema::ValidationError do |error|
+      render_new_event(Event.new, INVALID_PARAMETERS)
+    end
+
+    rescue_from ActiveRecord::RecordNotSaved do |error|
+      render_new_event(error.record, error.message)
+    end
+
     # Flash message about successful creation of event record
-    CREATION_SUCCESS = 'New event is successfully created'
-
-    # Template of flash message about failed creation of event record
-    CREATION_FAILED_TEMPLATE = 'New event isn\'t created: %s'
-
-    # Relative path to ERB-file of page with event creation form
-    ERB = 'events/new'
+    NOTICE = 'New event is successfully created'
 
     # Handles POST-request with `/events` path
     def create
-      creator_id = current_user.id
-      args = params.to_unsafe_hash.tap { |h| h[:creator_id] = creator_id }
-      event = EventLogic.create(args)
-      error_message = extract_error_message(event)
-      if error_message.empty?
-        flash.notice = CREATION_SUCCESS
-        redirect_to root_path
-      else
-        error_message = format(CREATION_FAILED_TEMPLATE, error_message)
-        flash.now.alert = error_message
-        render ERB, locals: { event: event }
-      end
+      EventLogic.create(logic_params)
+      redirect_to root_path, notice: NOTICE
     end
 
     private
 
-    # Returns proper error message if there is any in the provided model
-    # instance or empty string if there is none
+    # Returns associative array of business logic parameters
+    # @return [Hash]
+    #   resulting associative array
+    def logic_params
+      request.request_parameters.dup.tap do |hash|
+        hash[:creator_id] = current_user.id
+      end
+    end
+
+    # Template of flash message about failed creation of event record
+    ALERT_TEMPLATE = 'New event isn\'t created: %s'
+
+    # Relative path to ERB-file of page with event creation form
+    NEW_EVENT = 'events/new'
+
+    # Renders page with event creation form, flashing alert message with event
+    # creation error
     # @param [Event] event
     #   event record
-    # @return [String]
-    #   resulting string
-    def extract_error_message(event)
-      return '' if event.errors.empty?
-      field, messages = event.errors.messages.first
-      field = field.to_s
-      field.tr!('_', ' ')
-      message = messages.first.downcase
-      "#{field} #{message}"
+    # @param [String] error_message
+    #   message with event creation error
+    def render_new_event(event, error_message)
+      alert = format(ALERT_TEMPLATE, error_message)
+      flash.now.alert = alert
+      render NEW_EVENT, locals: { event: event }
     end
   end
 end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Sessions REST API', type: :request do
   describe 'GET /login' do
     before { get '/login' }

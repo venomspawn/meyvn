@@ -2,18 +2,17 @@
 
 # Provides business logic of event management
 module EventLogic
-  # Tries to create new event record and returns {Event} instance with
-  # attributes of the record
-  # @param [Hash]
+  # Creates new event record
+  # @param [Hash] params
   #   associative array of parameters
-  # @return [Event]
-  #   {Event} instance
+  # @raise [ActiveRecord::RecordNotSaved]
+  #   if the record can't be created
   def self.create(params)
     Create.new(params).create
   end
 
   # Returns array of assocative arrays with information on events
-  # @param [Hash]
+  # @param [Hash] params
   #   associative array of parameters
   # @return [Array<Hash>]
   #   resulting array

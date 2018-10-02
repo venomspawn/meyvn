@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Routing for user management REST API', type: :routing do
   it 'routes GET /users/new to users/new_page#draw' do
     expect(get '/users/new')

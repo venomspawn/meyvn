@@ -3,15 +3,14 @@
 module EventLogic
   # Class of business logic which creates new event record
   class Create < Base::Logic
-    # Tries to create new event record and returns instance of {Event} with
-    # attributes of the record
-    # @return [Event]
-    #   instance with attributes of the record
+    # Creates new event record
+    # @raise [ActiveRecord::RecordNotSaved]
+    #   if the record can't be created
     def create
       Event.new(creation_params).tap do |event|
-        event.save
-      rescue ActiveRecord::StatementInvalid
-        event.errors.add(:finish, 'is less than start or equals it')
+        event.save!
+      rescue StandardError => exception
+        raise_error(event, exception)
       end
     end
 
@@ -22,6 +21,41 @@ module EventLogic
     #   resulting associative array
     def creation_params
       params[:event].dup.tap { |hash| hash[:creator_id] = params[:creator_id] }
+    end
+
+    # Raises proper error based on the provided information on exception
+    # @param [Event] event
+    #   event record
+    # @param [Exception] exception
+    #   object with information on exception
+    def raise_error(event, exception)
+      raise exception if exception.instance_of?(ActiveRecord::RecordNotSaved)
+      raise error(exception), event
+    end
+
+    # Returns class of errors to raise
+    # @param [Exception] exception
+    #   object with information on exception
+    # @return [Class]
+    #   class of errors to raise
+    def error(exception)
+      return Errors::Finish::Invalid if finish_invalid?(exception)
+      Errors::CreationParams::Invalid
+    end
+
+    # Name of constraint on `start` and `finish` fields of `events` table
+    CONSTRAINT_NAME = 'events_check_start_is_less_than_finish'
+
+    # Returns if the provided exception is about violation of the constraint
+    # with {CONSTRAINT_NAME} name or not
+    # @param [Exception] exception
+    #   object with information on exception
+    # @return [Boolean]
+    #   if the provided exception is about violation of the constraint with
+    #   {CONSTRAINT_NAME} name or not
+    def finish_invalid?(exception)
+      exception.is_a?(ActiveRecord::StatementInvalid) &&
+        exception.message.include?(CONSTRAINT_NAME)
     end
   end
 end
