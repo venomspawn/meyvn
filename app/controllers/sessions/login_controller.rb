@@ -5,7 +5,7 @@ module Sessions
   class LoginController < ApplicationController
     # Handles POST-request with `/login` path
     def login
-      user = UserLogic.auth(params.to_unsafe_hash)
+      user = Users::Logics.auth(params.to_unsafe_hash)
       if user.nil?
         flash_log_in_fail
       else

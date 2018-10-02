@@ -21,7 +21,7 @@ module Events
 
     # Handles POST-request with `/events` path
     def create
-      EventLogic.create(logic_params)
+      Logics.create(logic_params)
       redirect_to root_path, notice: NOTICE
     end
 
