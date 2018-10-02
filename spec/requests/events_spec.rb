@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Events REST API', type: :request do
   describe 'POST /events', type: :request do
-    before { post '/events', params: params }
-
     subject { response }
 
     context 'when not authorized' do
@@ -19,24 +19,21 @@ RSpec.describe 'Events REST API', type: :request do
     context 'when authorized' do
       before do
         post '/login', params: login_params
+        create(:city)
+        create(:topic)
         post '/events', params: params
       end
 
-      let(:login_params) { { login: login } }
-      let(:login) { { email: user.email, password: user.password } }
-      let(:user) { create(:user) }
-      let(:params) { { event: event } }
-      let(:event) { attributes_for(:event, *traits).except(:creator_id) }
-      let(:traits) { [] }
+      let(:login_params) { create('params/requests/sessions/login') }
+      let(:params) { create('params/requests/events/create', *params_traits) }
+      let(:params_traits) { [] }
 
       context 'when parameters are correct' do
         it { is_expected.to redirect_to root_url }
       end
 
-      context 'when finish is less than start or equals it' do
-        let(:traits) { [start: start, finish: finish] }
-        let(:start) { Time.now.strftime('%FT%H:%M') }
-        let(:finish) { (Time.now - 86_400).strftime('%FT%H:%M') }
+      context 'when parameters are of wrong structure' do
+        let(:params) { { of: { wrong: :structure } } }
 
         it { is_expected.to have_http_status(:ok) }
 
@@ -46,7 +43,40 @@ RSpec.describe 'Events REST API', type: :request do
           subject { response.body }
 
           it 'should include a message about the error' do
-            expect(subject).to include('is less than start or equals it')
+            expect(subject).to include('Invalid parameters')
+          end
+        end
+      end
+
+      context 'when parameters are of correct structure and invalid values' do
+        let(:params_traits) { %i[invalid] }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it { is_expected.to render_template('events/new') }
+
+        describe 'response body' do
+          subject { response.body }
+
+          it 'should include a message about the error' do
+            expect(subject).to include('Invalid values of parameters')
+          end
+        end
+      end
+
+      context 'when finish is less than start or equals it' do
+        let(:params_traits) { %i[invalid_finish] }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it { is_expected.to render_template('events/new') }
+
+        describe 'response body' do
+          subject { response.body }
+
+          it 'should include a message about the error' do
+            expect(subject)
+              .to include('Finish is less than start or equals it')
           end
         end
       end
@@ -67,12 +97,12 @@ RSpec.describe 'Events REST API', type: :request do
     context 'when authorized' do
       before do
         post '/login', params: login_params
+        create(:city)
+        create(:topic)
         get '/events'
       end
 
-      let(:login_params) { { login: login } }
-      let(:login) { { email: user.email, password: user.password } }
-      let(:user) { create(:user) }
+      let(:login_params) { create('params/requests/sessions/login') }
 
       it { is_expected.to have_http_status(:ok) }
 
@@ -95,15 +125,13 @@ RSpec.describe 'Events REST API', type: :request do
 
     context 'when authorized' do
       before do
-        post '/login', params: params
+        post '/login', params: login_params
         create(:city)
         create(:topic)
         get '/events/new'
       end
 
-      let(:params) { { login: login } }
-      let(:login) { { email: user.email, password: user.password } }
-      let(:user) { create(:user) }
+      let(:login_params) { create('params/requests/sessions/login') }
 
       it { is_expected.to have_http_status(:ok) }
 

@@ -10,46 +10,10 @@ RSpec.describe EventLogic do
   end
 
   describe '.create' do
-    include described_class::Create::SpecHelper
+    subject { described_class.create(params) }
 
-    subject(:result) { described_class.create(params) }
-
-    let(:params) { create_params }
-
-    describe 'result' do
-      subject { result }
-
-      it { is_expected.to be_an(Event) }
-
-      context 'when parameters are correct' do
-        it 'should be saved' do
-          expect(result.saved_changes?).to be_truthy
-        end
-
-        describe '#errors' do
-          subject { result.errors }
-
-          it { is_expected.to be_empty }
-        end
-      end
-
-      context 'when finish is less than start or equals it' do
-        let(:params) { create_params(false) }
-
-        it 'should not be saved' do
-          expect(result.saved_changes?).to be_falsey
-        end
-
-        describe '#errors' do
-          subject { result.errors }
-
-          it 'should include a message about the error' do
-            expect(subject.messages[:finish])
-              .to include('is less than start or equals it')
-          end
-        end
-      end
-    end
+    let(:params) { create('params/logics/events/create', *params_traits) }
+    let(:params_traits) { [] }
 
     context 'when parameters are correct' do
       it 'should create new record' do
@@ -62,6 +26,22 @@ RSpec.describe EventLogic do
 
       it 'should raise JSON::Schema::ValidationError' do
         expect { subject }.to raise_error(JSON::Schema::ValidationError)
+      end
+    end
+
+    context 'when parameters are of correct structure and invalid values' do
+      let(:params_traits) { %i[invalid] }
+
+      it 'should raise ActiveRecord::RecordNotSaved' do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotSaved)
+      end
+    end
+
+    context 'when finish is less than start or equals it' do
+      let(:params_traits) { %i[invalid_finish] }
+
+      it 'should raise ActiveRecord::RecordNotSaved' do
+        expect { subject }.to raise_error(ActiveRecord::RecordNotSaved)
       end
     end
   end

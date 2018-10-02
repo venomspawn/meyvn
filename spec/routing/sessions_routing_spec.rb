@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rails_helper'
+
 RSpec.describe 'Routing for sessions REST API', type: :routing do
   it 'routes GET /login to sessions/login_page#draw' do
     expect(get '/login')

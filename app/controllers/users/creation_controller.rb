@@ -3,48 +3,44 @@
 module Users
   # Class of controllers which handle user record creation requests
   class CreationController < ApplicationController
-    rescue_from JSON::Schema::ValidationError do
-      head :unprocessable_entity
+    # Message about invalid parameters
+    INVALID_PARAMETERS = 'Invalid parameters'
+
+    rescue_from JSON::Schema::ValidationError do |error|
+      render_new_user(User.new, INVALID_PARAMETERS)
     end
 
-    # Flash message about successful creation of user account
-    SUCCESS = 'User account is successfully created'
+    rescue_from ActiveRecord::RecordNotSaved do |error|
+      render_new_user(error.record, error.message)
+    end
 
-    # Template of flash message about failed creation of user account
-    FAILED_TEMPLATE = 'User account isn\'t created: %s'
-
-    # Relative path to ERB-file of page with user record creation form
-    NEW_ERB = 'users/new'
+    # Flash message about successful creation of user record
+    NOTICE = 'New user is successfully signed up'
 
     # Handles POST-request with `/users` path
     def create
-      user = UserLogic.create(params.to_unsafe_hash)
-      error_message = extract_error_message(user)
-      if error_message.empty?
-        flash.notice = SUCCESS
-        redirect_to root_path
-      else
-        error_message = format(FAILED_TEMPLATE, error_message)
-        flash.now.alert = error_message
-        render NEW_ERB, locals: { user: user }
-      end
+      UserLogic.create(request.request_parameters)
+      redirect_to root_path, notice: NOTICE
     end
 
     private
 
-    # Returns proper error message if there is any in the provided model
-    # instance or empty string if there is none
-    # @param [User] user
+    # Template of flash message about failed creation of user record
+    ALERT_TEMPLATE = 'New user isn\'t signed up: %s'
+
+    # Relative path to ERB-file of page with user creation form
+    NEW_USER = 'users/new'
+
+    # Renders page with user creation form, flashing alert message with user
+    # creation error
+    # @param [Event] user
     #   user record
-    # @return [String]
-    #   resulting string
-    def extract_error_message(user)
-      return '' if user.errors.empty?
-      field, messages = user.errors.messages.first
-      field = field.to_s
-      field.tr!('_', ' ')
-      message = messages.first.downcase
-      "#{field} #{message}"
+    # @param [String] error_message
+    #   message with user creation error
+    def render_new_user(user, error_message)
+      alert = format(ALERT_TEMPLATE, error_message)
+      flash.now.alert = alert
+      render NEW_USER, locals: { user: user }
     end
   end
 end

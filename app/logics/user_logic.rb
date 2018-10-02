@@ -14,12 +14,11 @@ module UserLogic
     Auth.new(params).auth
   end
 
-  # Tries to create new user record and returns {User} instance with attributes
-  # of the record
+  # Creates new user record
   # @param [Hash]
   #   associative array of parameters
-  # @return [User]
-  #   {User} instance
+  # @raise [ActiveRecord::RecordNotSaved]
+  #   if the record can't be created
   def self.create(params)
     Create.new(params).create
   end
