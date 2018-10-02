@@ -24,7 +24,7 @@ RSpec.describe 'Events REST API', type: :request do
         post '/events', params: params
       end
 
-      let(:login_params) { create('params/requests/sessions/login') }
+      let(:login_params) { create('params/requests/users/login') }
       let(:params) { create('params/requests/events/create', *params_traits) }
       let(:params_traits) { [] }
 
@@ -102,7 +102,7 @@ RSpec.describe 'Events REST API', type: :request do
         get '/events'
       end
 
-      let(:login_params) { create('params/requests/sessions/login') }
+      let(:login_params) { create('params/requests/users/login') }
 
       it { is_expected.to have_http_status(:ok) }
 
@@ -116,7 +116,7 @@ RSpec.describe 'Events REST API', type: :request do
     context 'when not authorized' do
       before { get '/events/new' }
 
-      let(:session) { {} }
+      let(:user) { {} }
 
       it { is_expected.to have_http_status(:found) }
 
@@ -131,7 +131,7 @@ RSpec.describe 'Events REST API', type: :request do
         get '/events/new'
       end
 
-      let(:login_params) { create('params/requests/sessions/login') }
+      let(:login_params) { create('params/requests/users/login') }
 
       it { is_expected.to have_http_status(:ok) }
 

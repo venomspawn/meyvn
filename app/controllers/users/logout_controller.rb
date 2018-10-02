@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Sessions
+module Users
   # Class of controllers which handle requests to log out
   class LogoutController < ApplicationController
     # Message on successful log out

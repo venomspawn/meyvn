@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-module Sessions
+module Users
   # Class of controllers which handle requests to log in
   class LoginController < ApplicationController
     # Handles POST-request with `/login` path
     def login
-      user = Users::Logics.auth(params.to_unsafe_hash)
+      user = Logics.auth(params.to_unsafe_hash)
       if user.nil?
         flash_log_in_fail
       else
@@ -19,7 +19,7 @@ module Sessions
     LOGIN_FAIL = 'Wrong email or password'
 
     # Relative path to ERB-file of page with log in form
-    LOGIN_ERB = 'sessions/login'
+    LOGIN_ERB = 'users/login'
 
     # Adds {LOGIN_FAIL} alert to flash and renders log in form
     def flash_log_in_fail
