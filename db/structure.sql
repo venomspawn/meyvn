@@ -106,6 +106,9 @@ CREATE TABLE public.users (
     id uuid DEFAULT public.gen_random_uuid() NOT NULL,
     email text NOT NULL,
     password_digest text NOT NULL,
+    filter_city_id uuid,
+    filter_topic_id uuid,
+    filter_start timestamp without time zone,
     CONSTRAINT users_email_format_check CHECK ((email ~ '\A[\w._-]+@[\w._-]+\Z'::text))
 );
 
@@ -194,6 +197,20 @@ CREATE INDEX index_events_on_topic_id ON public.events USING btree (topic_id);
 
 
 --
+-- Name: index_users_on_filter_city_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_filter_city_id ON public.users USING btree (filter_city_id);
+
+
+--
+-- Name: index_users_on_filter_topic_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_users_on_filter_topic_id ON public.users USING btree (filter_topic_id);
+
+
+--
 -- Name: topics_lower_title_unique_key; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -224,11 +241,27 @@ ALTER TABLE ONLY public.events
 
 
 --
+-- Name: users fk_rails_b462abf33e; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_b462abf33e FOREIGN KEY (filter_topic_id) REFERENCES public.topics(id);
+
+
+--
 -- Name: events fk_rails_e5e78194cb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.events
     ADD CONSTRAINT fk_rails_e5e78194cb FOREIGN KEY (topic_id) REFERENCES public.topics(id);
+
+
+--
+-- Name: users fk_rails_fbc05fe8ec; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_rails_fbc05fe8ec FOREIGN KEY (filter_city_id) REFERENCES public.cities(id);
 
 
 --
@@ -242,6 +275,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180908125414'),
 ('20180914062139'),
 ('20180916081935'),
-('20180916092217');
+('20180916092217'),
+('20181003115006');
 
 
