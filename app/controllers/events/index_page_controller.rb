@@ -5,13 +5,26 @@ module Events
   class IndexPageController < ApplicationController
     before_action :auth
 
-    # Relative path to ERB-file of page with events index
-    ERB = 'events/index'
-
     # Handles GET-request with `/events` path
     def draw
-      events = Logics.index(params.to_unsafe_hash)
-      render ERB, locals: { events: events, filter: params[:filter] }
+      events = Logics.index(logic_params)
+      render :index, locals: { events: events, filter: filter }
+    end
+
+    private
+
+    # Returns associative array of logic parameters
+    # @return [Hash]
+    #   associative array of logic parameters
+    def logic_params
+      request.query_parameters
+    end
+
+    # Returns value of `filter` parameter
+    # @return [Object]
+    #   resulting value
+    def filter
+      logic_params[:filter]
     end
   end
 end

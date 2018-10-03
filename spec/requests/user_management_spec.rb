@@ -10,7 +10,7 @@ RSpec.describe 'User management REST API', type: :request do
 
     it { is_expected.to have_http_status(:ok) }
 
-    it { is_expected.to render_template('users/new') }
+    it { is_expected.to render_template(:new) }
   end
 
   describe 'POST /users', type: :request do
@@ -38,7 +38,7 @@ RSpec.describe 'User management REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/new') }
+      it { is_expected.to render_template(:new) }
 
       describe 'response body' do
         subject { response.body }
@@ -56,7 +56,7 @@ RSpec.describe 'User management REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/new') }
+      it { is_expected.to render_template(:new) }
 
       describe 'response body' do
         subject { response.body }
@@ -70,7 +70,7 @@ RSpec.describe 'User management REST API', type: :request do
     context 'when password and password confirmation are different' do
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/new') }
+      it { is_expected.to render_template(:new) }
 
       describe 'response body' do
         subject { response.body }
@@ -86,7 +86,7 @@ RSpec.describe 'User management REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/new') }
+      it { is_expected.to render_template(:new) }
 
       describe 'response body' do
         subject { response.body }
@@ -105,7 +105,7 @@ RSpec.describe 'User management REST API', type: :request do
 
     it { is_expected.to have_http_status(:ok) }
 
-    it { is_expected.to render_template('users/login') }
+    it { is_expected.to render_template(:login) }
   end
 
   describe 'POST /login' do
@@ -120,7 +120,7 @@ RSpec.describe 'User management REST API', type: :request do
     context 'when identification is failed' do
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/login') }
+      it { is_expected.to render_template(:login) }
 
       describe 'response body' do
         subject { response.body }
@@ -140,7 +140,7 @@ RSpec.describe 'User management REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('users/login') }
+      it { is_expected.to render_template(:login) }
 
       describe 'response body' do
         subject { response.body }

@@ -28,9 +28,6 @@ module Users
     # Template of flash message about failed creation of user record
     ALERT_TEMPLATE = 'New user isn\'t signed up: %s'
 
-    # Relative path to ERB-file of page with user creation form
-    NEW_USER = 'users/new'
-
     # Renders page with user creation form, flashing alert message with user
     # creation error
     # @param [Event] user
@@ -40,7 +37,7 @@ module Users
     def render_new_user(user, error_message)
       alert = format(ALERT_TEMPLATE, error_message)
       flash.now.alert = alert
-      render NEW_USER, locals: { user: user }
+      render :new, locals: { user: user }
     end
   end
 end

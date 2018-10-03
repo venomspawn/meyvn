@@ -5,13 +5,10 @@ module Events
   class NewPageController < ApplicationController
     before_action :auth
 
-    # Relative path to ERB-file of page with event creation form
-    ERB = 'events/new'
-
     # Handles GET-request with `/events/new` path
     def draw
       event = Event.new
-      render ERB, locals: { event: event }
+      render :new, locals: { event: event }
     end
   end
 end
