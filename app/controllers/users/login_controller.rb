@@ -18,7 +18,7 @@ module Users
     def login
       user = Logics.auth(request.request_parameters)
       session[:user_id] = user.id
-      redirect_to root_path, notice: NOTICE
+      redirect_to events_url, notice: NOTICE
     end
 
     private

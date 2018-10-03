@@ -19,17 +19,17 @@
   <% if current_user.nil? %>
     <table id="header">
       <tr>
-        <td><%= button_to 'Root', root_path, method: :get %></td>
-        <td><%= button_to 'Log In', login_path, method: :get %></td>
-        <td><%= button_to 'Sign Up', new_user_path, method: :get %></td>
+        <td><%= button_to 'Log In', login_url, method: :get %></td>
+        <td><%= button_to 'Sign Up', users_new_url, method: :get %></td>
       </tr>
     </table>
   <% else %>
     <table id="header">
       <tr>
         <td><%= current_user.email %></td>
-        <td><%= button_to 'Root', root_path, method: :get %></td>
-        <td><%= button_to 'Log Out', logout_path %></td>
+        <td><%= button_to 'Events', events_url, method: :get %></td>
+        <td><%= button_to 'New Event', events_new_url, method: :get %></td>
+        <td><%= button_to 'Log Out', logout_url %></td>
       </tr>
     </table>
   <% end %>

@@ -22,7 +22,7 @@ module Events
     # Handles POST-request with `/events` path
     def create
       Logics.create(logic_params)
-      redirect_to root_path, notice: NOTICE
+      redirect_to events_url, notice: NOTICE
     end
 
     private

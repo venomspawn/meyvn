@@ -29,7 +29,7 @@ RSpec.describe 'Events REST API', type: :request do
       let(:params_traits) { [] }
 
       context 'when parameters are correct' do
-        it { is_expected.to redirect_to root_url }
+        it { is_expected.to redirect_to events_url }
       end
 
       context 'when parameters are of wrong structure' do

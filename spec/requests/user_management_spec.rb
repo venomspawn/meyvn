@@ -29,7 +29,7 @@ RSpec.describe 'User management REST API', type: :request do
       let(:email) { create(:email) }
       let(:password_confirmation) { password }
 
-      it { is_expected.to redirect_to root_url }
+      it { is_expected.to redirect_to login_url }
     end
 
     context 'when email is of wrong format' do
@@ -160,7 +160,7 @@ RSpec.describe 'User management REST API', type: :request do
       let(:password) { user.password }
       let(:user) { create(:user) }
 
-      it { is_expected.to redirect_to root_url }
+      it { is_expected.to redirect_to events_url }
 
       it 'should set `user_id` attribute of session to user id' do
         expect(session[:user_id]).to be == user.id
@@ -173,7 +173,7 @@ RSpec.describe 'User management REST API', type: :request do
 
     subject { response }
 
-    it { is_expected.to redirect_to root_url }
+    it { is_expected.to redirect_to login_url }
 
     it 'should set `user_id` attribute of session to `nil`' do
       expect(session[:user_id]).to be_nil

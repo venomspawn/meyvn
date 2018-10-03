@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   # Redirects to login page if the session lacks authenticated user
   def auth
-    redirect_to login_path, alert: AUTH_REQUIRED if current_user.nil?
+    redirect_to login_url, alert: AUTH_REQUIRED if current_user.nil?
   end
 
   # Returns yielded value or provided default value if an exception is raised

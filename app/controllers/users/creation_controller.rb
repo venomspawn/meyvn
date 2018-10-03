@@ -20,7 +20,7 @@ module Users
     # Handles POST-request with `/users` path
     def create
       Logics.create(request.request_parameters)
-      redirect_to root_path, notice: NOTICE
+      redirect_to login_url, notice: NOTICE
     end
 
     private
