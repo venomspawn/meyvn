@@ -21,20 +21,24 @@ RSpec.describe Users::Logics do
     describe 'result' do
       subject { result }
 
-      context 'when identification is failed' do
-        it { is_expected.to be_nil }
-      end
-
-      context 'when authentication is failed' do
-        let!(:user) { create(:user, email: email, password: create(:string)) }
-
-        it { is_expected.to be_nil }
-      end
-
       context 'when identification and authentication are successful' do
         let!(:user) { create(:user, email: email, password: password) }
 
         it { is_expected.to be_a(User) }
+      end
+    end
+
+    context 'when identification is failed' do
+      it 'should raise RuntimeError' do
+        expect { subject }.to raise_error(RuntimeError)
+      end
+    end
+
+    context 'when authentication is failed' do
+      let!(:user) { create(:user, email: email, password: create(:string)) }
+
+      it 'should raise RuntimeError' do
+        expect { subject }.to raise_error(RuntimeError)
       end
     end
   end

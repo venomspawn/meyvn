@@ -7,17 +7,19 @@ module Users
       # Condition for extracting user record
       IDENTIFICATION_CONDITION = 'lower("email") = lower(?)'
 
-      # Tries to identify and authentify user. Returns user record if both
-      # processes are successful. Returns nil otherwise.
-      # @param [Hash]
-      #   associative array of parameters
+      # Returns record identified and authentified user
       # @return [User]
       #   identified and authentified {User} instance
-      # @return [NilClass]
-      #   if either identification or authentication is failed
+      # @raise [RuntimeError]
+      #   if identification is failed
+      # @raise [RuntimeError]
+      #   if authentication is failed
       def auth
-        user = User.where(IDENTIFICATION_CONDITION, email).take
-        user if user&.authenticate(password)
+        User.where(IDENTIFICATION_CONDITION, email).take.tap do |user|
+          raise Errors::Identification::Failed if user.nil?
+          next if user.authenticate(password)
+          raise Errors::Authentication::Failed
+        end
       end
 
       private
