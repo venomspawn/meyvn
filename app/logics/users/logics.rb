@@ -23,5 +23,16 @@ module Users
     def self.create(params)
       Create.new(params).create
     end
+
+    # Saves filter of events index to user record
+    # @param [Hash] params
+    #   associative array of parameters
+    # @raise [ActiveRecord::RecordNotFound]
+    #   if the user record can't be found
+    # @raise [ActiveRecord::StatementInvalid]
+    #   if the user record can't be updated
+    def self.save_filter(params)
+      SaveFilter.new(params).save
+    end
   end
 end
