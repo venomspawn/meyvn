@@ -13,6 +13,24 @@
 #   Digest of password
 #   @return [String]
 #     digest of password
+# @!attribute filter_city_id
+#   City identifier saved from filter of events index or `nil`, if no city
+#   identifier is saved
+#   @return [String, NilClass]
+#     city identifier saved from filter of events index or `nil`, if no city
+#     identifier is saved
+# @!attribute filter_topic_id
+#   Topic identifier saved from filter of events index or `nil`, if no topic
+#   identifier is saved
+#   @return [String, NilClass]
+#     topic identifier saved from filter of events index or `nil`, if no topic
+#     identifier is saved
+# @!attribute filter_start
+#   Date and time of event start saved from filter of events index or `nil`, if
+#   no date and time are saved
+#   @return [Time, NilClass]
+#     date and time of event start saved from filter of events index or `nil`,
+#     if no date and time are saved
 class User < ApplicationRecord
   has_secure_password
 
