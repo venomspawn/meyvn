@@ -22,7 +22,7 @@ module Events
     # Handles POST-request with `/events` path
     def create
       Logics.create(logic_params)
-      redirect_to root_path, notice: NOTICE
+      redirect_to events_url, notice: NOTICE
     end
 
     private
@@ -39,9 +39,6 @@ module Events
     # Template of flash message about failed creation of event record
     ALERT_TEMPLATE = 'New event isn\'t created: %s'
 
-    # Relative path to ERB-file of page with event creation form
-    NEW_EVENT = 'events/new'
-
     # Renders page with event creation form, flashing alert message with event
     # creation error
     # @param [Event] event
@@ -51,7 +48,7 @@ module Events
     def render_new_event(event, error_message)
       alert = format(ALERT_TEMPLATE, error_message)
       flash.now.alert = alert
-      render NEW_EVENT, locals: { event: event }
+      render :new, locals: { event: event }
     end
   end
 end

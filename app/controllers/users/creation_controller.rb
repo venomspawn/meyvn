@@ -20,16 +20,13 @@ module Users
     # Handles POST-request with `/users` path
     def create
       Logics.create(request.request_parameters)
-      redirect_to root_path, notice: NOTICE
+      redirect_to login_url, notice: NOTICE
     end
 
     private
 
     # Template of flash message about failed creation of user record
     ALERT_TEMPLATE = 'New user isn\'t signed up: %s'
-
-    # Relative path to ERB-file of page with user creation form
-    NEW_USER = 'users/new'
 
     # Renders page with user creation form, flashing alert message with user
     # creation error
@@ -40,7 +37,7 @@ module Users
     def render_new_user(user, error_message)
       alert = format(ALERT_TEMPLATE, error_message)
       flash.now.alert = alert
-      render NEW_USER, locals: { user: user }
+      render :new, locals: { user: user }
     end
   end
 end

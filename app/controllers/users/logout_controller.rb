@@ -9,7 +9,7 @@ module Users
     # Handles POST-request with `/logout` path
     def logout
       session.delete(:user_id)
-      redirect_to root_path, notice: NOTICE
+      redirect_to login_url, notice: NOTICE
     end
   end
 end

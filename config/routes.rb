@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   scope module: 'users' do
     post 'users'     => 'creation#create'
-    get  'users/new' => 'new_page#draw', as: :new_user
+    get  'users/new' => 'new_page#draw'
     get  'login'     => 'login_page#draw'
     post 'login'     => 'login#login'
     post 'logout'    => 'logout#logout'

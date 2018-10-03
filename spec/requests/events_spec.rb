@@ -29,7 +29,7 @@ RSpec.describe 'Events REST API', type: :request do
       let(:params_traits) { [] }
 
       context 'when parameters are correct' do
-        it { is_expected.to redirect_to root_url }
+        it { is_expected.to redirect_to events_url }
       end
 
       context 'when parameters are of wrong structure' do
@@ -37,7 +37,7 @@ RSpec.describe 'Events REST API', type: :request do
 
         it { is_expected.to have_http_status(:ok) }
 
-        it { is_expected.to render_template('events/new') }
+        it { is_expected.to render_template(:new) }
 
         describe 'response body' do
           subject { response.body }
@@ -53,7 +53,7 @@ RSpec.describe 'Events REST API', type: :request do
 
         it { is_expected.to have_http_status(:ok) }
 
-        it { is_expected.to render_template('events/new') }
+        it { is_expected.to render_template(:new) }
 
         describe 'response body' do
           subject { response.body }
@@ -69,7 +69,7 @@ RSpec.describe 'Events REST API', type: :request do
 
         it { is_expected.to have_http_status(:ok) }
 
-        it { is_expected.to render_template('events/new') }
+        it { is_expected.to render_template(:new) }
 
         describe 'response body' do
           subject { response.body }
@@ -106,7 +106,7 @@ RSpec.describe 'Events REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('events/index') }
+      it { is_expected.to render_template(:index) }
     end
   end
 
@@ -135,7 +135,7 @@ RSpec.describe 'Events REST API', type: :request do
 
       it { is_expected.to have_http_status(:ok) }
 
-      it { is_expected.to render_template('events/new') }
+      it { is_expected.to render_template(:new) }
     end
   end
 end
