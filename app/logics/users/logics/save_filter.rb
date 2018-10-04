@@ -47,7 +47,7 @@ module Users
       # @return [String]
       #   resulting string
       def string_sql(value)
-        return NULL if value.nil?
+        return NULL if value.blank?
         value = connection.quote_string(value)
         format(QUOTED_TEMPLATE, value)
       end
