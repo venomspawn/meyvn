@@ -4,8 +4,6 @@ module Users
   # Class of controllers which handle requests on saving filter into current
   # user record
   class FilterSavingController < ApplicationController
-    before_action :auth
-
     # Returns relative path to directory constructed from `Events` namespace
     # @return [String]
     #   resulting path
@@ -14,6 +12,8 @@ module Users
     end
 
     self.view_paths = [views_resolver, layout_resolver]
+
+    before_action :auth
 
     # Message about invalid parameters
     INVALID_PARAMETERS = 'Invalid parameters'
