@@ -4,7 +4,7 @@
 <% topic_id = yield_safely { filter[:topic_id] } %>
 <% start    = yield_safely { filter[:start] } %>
 
-<%= form_for :filter, url: events_url, method: :get do |form| %>
+<%= form_for :filter, url: events_url do |form| %>
   <div>
     <%= form.label :city %>
     <%= form.select :city_id do %>
@@ -30,7 +30,10 @@
     <%= form.datetime_field :start, value: start %>
   </div>
   <div>
-    <%= form.submit 'Refresh' %>
+    <%= form.submit 'Refresh', formmethod: :get %>
+  </div>
+  <div>
+    <%= form.submit 'Save Filter', formaction: save_filter_url %>
   </div>
 <% end %>
 

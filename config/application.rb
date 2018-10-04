@@ -17,6 +17,7 @@ module Meyvn
   class Application < Rails::Application
     config.load_defaults 5.2
 
+    config.action_controller.per_form_csrf_tokens = false
     config.active_record.schema_format = :sql
     config.eager_load_paths << Rails.root.join('app', 'logics')
     config.generators.system_tests = nil

@@ -61,12 +61,47 @@ RSpec.describe User, type: :model do
         expect { subject }.to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
+
+    context 'when filter city identifier is an UUID' do
+      let(:params) { attributes_for(:user, filter_city_id: uuid) }
+
+      context 'when the UUID is not primary key of a row in topics table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
+      end
+    end
+
+    context 'when filter topic identifier is an UUID' do
+      let(:params) { attributes_for(:user, filter_topic_id: uuid) }
+
+      context 'when the UUID is not primary key of a row in topics table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
+      end
+    end
   end
 
   describe 'instance' do
     subject { create(:user) }
 
-    messages = %i[email id password password= password_digest save update]
+    messages = %i[
+      email
+      filter_city_id
+      filter_topic_id
+      filter_start
+      id
+      password
+      password=
+      password_digest
+      save
+      update
+    ]
     it { is_expected.to respond_to(*messages) }
   end
 
@@ -82,6 +117,80 @@ RSpec.describe User, type: :model do
         it { is_expected.to be_a(String) }
 
         it { is_expected.to match_email_format }
+      end
+    end
+  end
+
+  describe '#filter_city_id' do
+    subject(:result) { instance.filter_city_id }
+
+    describe 'result' do
+      subject { result }
+
+      context 'when a city identifier is saved in the field' do
+        let(:instance) { create(:user, filter_city_id: city.id) }
+        let(:city) { create(:city) }
+
+        it { is_expected.to be_a(String) }
+
+        it { is_expected.to match_uuid_format }
+
+        it 'should be primary key of a row in cities table' do
+          expect(City.find(result)).not_to be_nil
+        end
+      end
+
+      context 'when there is no city identifier saved in the field' do
+        let(:instance) { create(:user) }
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
+  describe '#filter_topic_id' do
+    subject(:result) { instance.filter_topic_id }
+
+    describe 'result' do
+      subject { result }
+
+      context 'when a topic identifier is saved in the field' do
+        let(:instance) { create(:user, filter_topic_id: topic.id) }
+        let(:topic) { create(:topic) }
+
+        it { is_expected.to be_a(String) }
+
+        it { is_expected.to match_uuid_format }
+
+        it 'should be primary key of a row in topics table' do
+          expect(Topic.find(result)).not_to be_nil
+        end
+      end
+
+      context 'when there is no topic identifier saved in the field' do
+        let(:instance) { create(:user) }
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
+
+  describe '#filter_start' do
+    subject(:result) { instance.filter_start }
+
+    describe 'result' do
+      subject { result }
+
+      context 'when a date and time are saved in the field' do
+        let(:instance) { create(:user, filter_start: Time.now) }
+
+        it { is_expected.to be_a(Time) }
+      end
+
+      context 'when there are no date and time saved in the field' do
+        let(:instance) { create(:user) }
+
+        it { is_expected.to be_nil }
       end
     end
   end
@@ -180,6 +289,30 @@ RSpec.describe User, type: :model do
         expect { subject }.to raise_error(ActiveRecord::RecordNotUnique)
       end
     end
+
+    context 'when filter city identifier is an UUID' do
+      let(:instance) { build(:user, filter_city_id: uuid) }
+
+      context 'when the UUID is not primary key of a row in cities table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
+      end
+    end
+
+    context 'when filter topic identifier is an UUID' do
+      let(:instance) { build(:user, filter_city_id: uuid) }
+
+      context 'when the UUID is not primary key of a row in topics table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
+      end
+    end
   end
 
   describe '#update' do
@@ -220,6 +353,30 @@ RSpec.describe User, type: :model do
 
       it 'should raise ActiveRecord::RecordNotUnique' do
         expect { subject }.to raise_error(ActiveRecord::RecordNotUnique)
+      end
+    end
+
+    context 'when filter city identifier is an UUID' do
+      let(:params) { { filter_city_id: uuid } }
+
+      context 'when the UUID is not primary key of a row in cities table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
+      end
+    end
+
+    context 'when filter topic identifier is an UUID' do
+      let(:params) { { filter_topic_id: uuid } }
+
+      context 'when the UUID is not primary key of a row in topics table' do
+        let(:uuid) { SecureRandom.uuid }
+
+        it 'should raise ActiveRecord::InvalidForeignKey' do
+          expect { subject }.to raise_error { ActiveRecord::InvalidForeignKey }
+        end
       end
     end
   end
