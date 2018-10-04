@@ -8,7 +8,10 @@ module Events
       # @return [Array<Hash>]
       #   resulting array
       def index
-        connection.execute(sql).map(&:symbolize_keys!)
+        result = connection.execute(sql)
+        result.map(&:symbolize_keys!)
+      ensure
+        result&.clear
       end
 
       private
