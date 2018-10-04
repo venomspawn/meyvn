@@ -17,7 +17,25 @@ module Events
     # @return [Hash]
     #   associative array of logic parameters
     def logic_params
-      request.query_parameters
+      @logic_params ||= if request.query_parameters.empty?
+                          saved_filter
+                        else
+                          request.query_parameters
+                        end
+    end
+
+    # Returns associative array of saved filter parameters
+    # @return [HashWithIndifferentAccess]
+    #   resulting associative array
+    def saved_filter
+      hash = {
+        filter: {
+          city_id:  current_user.filter_city_id,
+          topic_id: current_user.filter_topic_id,
+          start:    current_user.filter_start&.strftime('%FT%H:%M')
+        }
+      }
+      hash.with_indifferent_access
     end
 
     # Returns value of `filter` parameter
