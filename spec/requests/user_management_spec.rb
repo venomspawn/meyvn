@@ -179,4 +179,80 @@ RSpec.describe 'User management REST API', type: :request do
       expect(session[:user_id]).to be_nil
     end
   end
+
+  describe 'POST /save_filter' do
+    subject { response }
+
+    context 'when not authorized' do
+      before { post '/save_filter', params: params }
+
+      let(:params) { {} }
+
+      it { is_expected.to have_http_status(:found) }
+
+      it { is_expected.to redirect_to(login_path) }
+    end
+
+    context 'when authorized' do
+      before do
+        post '/login', params: login_params
+        create(:city)
+        create(:topic)
+        post '/save_filter', params: params
+      end
+
+      let(:login_params) { create('params/requests/users/login', user: user) }
+      let(:user) { create(:user) }
+      let(:params) { create('params/requests/users/save_filter', traits) }
+      let(:traits) { { city_id: city_id, topic_id: topic_id, start: start } }
+      let(:city_id) { create(:city).id }
+      let(:topic_id) { create(:topic).id }
+      let(:start) { time.to_s }
+      let(:time) { Time.now.utc }
+
+      it { is_expected.to have_http_status(:ok) }
+
+      it { is_expected.to render_template(:index) }
+
+      it 'should save filter to current user record' do
+        subject
+        user.reload
+        expect(user.filter_city_id).to be == city_id
+        expect(user.filter_topic_id).to be == topic_id
+        expect(user.filter_start).to be_within(1).of(time)
+      end
+
+      context 'when parameters are of wrong structure' do
+        let(:params) { { of: { wrong: :structure } } }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it { is_expected.to render_template(:index) }
+
+        describe 'response body' do
+          subject { response.body }
+
+          it 'should include a message about the error' do
+            expect(subject).to include('Invalid parameters')
+          end
+        end
+      end
+
+      context 'when filter values are invalid' do
+        let(:city_id) { create(:uuid) }
+
+        it { is_expected.to have_http_status(:ok) }
+
+        it { is_expected.to render_template(:index) }
+
+        describe 'response body' do
+          subject { response.body }
+
+          it 'should include a message about the error' do
+            expect(subject).to include('Filter values are invalid')
+          end
+        end
+      end
+    end
+  end
 end

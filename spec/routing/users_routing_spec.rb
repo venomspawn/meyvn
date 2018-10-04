@@ -27,4 +27,9 @@ RSpec.describe 'Routing for user management REST API', type: :routing do
     expect(post '/logout')
       .to route_to(controller: 'users/logout', action: 'logout')
   end
+
+  it 'routes POST /save_filter to users/filter_saving#save' do
+    expect(post '/save_filter')
+      .to route_to(controller: 'users/filter_saving', action: 'save')
+  end
 end
