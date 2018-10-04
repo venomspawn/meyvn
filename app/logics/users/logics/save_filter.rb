@@ -10,12 +10,14 @@ module Users
       # @raise [ActiveRecord::StatementInvalid]
       #   if the user record can't be updated
       def save
-        result = connection.execute(update_sql)
-        raise Errors::User::NotFound if result.cmd_tuples.zero?
-      rescue ActiveRecord::StatementInvalid
-        raise Errors::FilterValues::Invalid
-      ensure
-        result&.clear
+        User.transaction(requires_new: true) do
+          result = connection.execute(update_sql)
+          raise Errors::User::NotFound if result.cmd_tuples.zero?
+        rescue ActiveRecord::StatementInvalid
+          raise Errors::FilterValues::Invalid
+        ensure
+          result&.clear
+        end
       end
 
       private
