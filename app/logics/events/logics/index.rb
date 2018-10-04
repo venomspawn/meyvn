@@ -8,10 +8,24 @@ module Events
       # @return [Array<Hash>]
       #   resulting array
       def index
-        ActiveRecord::Base.connection.execute(sql).map(&:symbolize_keys!)
+        connection.execute(sql).map(&:symbolize_keys!)
       end
 
       private
+
+      # Returns connection with database
+      # @return [ActiveRecord::ConnectionAdapters::PostgreSQLAdapter]
+      #   the connection
+      def connection
+        @connection ||= Event.connection
+      end
+
+      # Returns quoted string ready to use in SQL expression
+      # @return [String]
+      #   resulting string
+      def quote(obj)
+        connection.quote_string(obj.to_s)
+      end
 
       # Empty associative array
       EMPTY = {}.freeze
@@ -122,7 +136,8 @@ module Events
       # @return [NilClass, String]
       #   resulting value
       def city_id_condition
-        format(CITY_ID_CONDITION_TEMPLATE, city_id) if city_id.present?
+        return unless city_id.present?
+        format(CITY_ID_CONDITION_TEMPLATE, quote(city_id))
       end
 
       # Template of condition on topic identifier
@@ -133,7 +148,8 @@ module Events
       # @return [NilClass, String]
       #   resulting value
       def topic_id_condition
-        format(TOPIC_ID_CONDITION_TEMPLATE, topic_id) if topic_id.present?
+        return unless topic_id.present?
+        format(TOPIC_ID_CONDITION_TEMPLATE, quote(topic_id))
       end
 
       # Template of condition on events start date and time
@@ -143,7 +159,7 @@ module Events
       # @return [String]
       #   resulting string
       def start_condition
-        format(START_CONDITION_TEMPLATE, start)
+        format(START_CONDITION_TEMPLATE, quote(start))
       end
 
       # Returns string with conditions
