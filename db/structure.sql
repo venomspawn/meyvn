@@ -36,6 +36,25 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
 COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
+--
+-- Name: events_creation_trigger(); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION public.events_creation_trigger() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+  DECLARE
+    payload text;
+  BEGIN
+    payload = json_build_object('city_id',  NEW.city_id,
+                                'topic_id', NEW.topic_id,
+                                'start',    NEW.start);
+    EXECUTE 'NOTIFY events_creation, ' || quote_literal(payload);
+    RETURN NULL;
+  END;
+$$;
+
+
 SET default_tablespace = '';
 
 SET default_with_oids = false;
@@ -225,6 +244,13 @@ CREATE UNIQUE INDEX users_lower_email_unique_key ON public.users USING btree (lo
 
 
 --
+-- Name: events events_creation_trigger; Type: TRIGGER; Schema: public; Owner: -
+--
+
+CREATE TRIGGER events_creation_trigger AFTER INSERT ON public.events FOR EACH ROW EXECUTE PROCEDURE public.events_creation_trigger();
+
+
+--
 -- Name: events fk_rails_07b11fc6bb; Type: FK CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -276,6 +302,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20180914062139'),
 ('20180916081935'),
 ('20180916092217'),
-('20181003115006');
+('20181003115006'),
+('20181005103914');
 
 
