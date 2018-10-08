@@ -9,23 +9,41 @@ class DBSubscriber
     @control_channel = generate_control_channel_name
     @mutex = Thread::Mutex.new
     @channels = {}
+    @thread = nil
+  end
+
+  # Returns if subscription controller is launched or not
+  # @return [Boolean]
+  #   if subscription controller is launched or not
+  def started?
+    @thread.present? || sync { @thread.present? }
+  end
+
+  # Returns if there are some registered subscription or not
+  # @return [Boolean]
+  #   if there are some registered subscription or not
+  def subscriptions?
+    channels.size.positive?
   end
 
   # Shutdowns current notification controller and starts new one
   def start
-    shutdown
-    sync { @thread = Thread.new { Controller.new(channels, control_channel) } }
+    restart unless started?
   end
 
-  # @!method restart
-  #   Shutdowns current notification controller and starts new one
-  alias_method :restart, :start
+  # Shutdowns current notification controller and starts new one
+  def restart
+    shutdown
+    sync { @thread = launch_controller_thread }
+  end
 
   # Shutdowns current notification controller
   def shutdown
-    channels.each_key { |channel| notify(:unsubscribe, channel) }
-    sync { channels.clear }
-    notify(:shutdown)
+    if started?
+      channels.each_key { |channel| notify(:unsubscribe, channel) }
+      notify(:shutdown)
+    end
+    sync { @thread = nil }
   end
 
   # Adds subscription on channel with provided block as a handler of
@@ -37,7 +55,7 @@ class DBSubscriber
   def subscribe(channel, &block)
     channel = channel.to_s
     sync { channels[channel] = block.to_proc }
-    notify(:subscribe, channel)
+    notify(:subscribe, channel) if started?
   end
 
   # Removes subscription on channel
@@ -46,7 +64,7 @@ class DBSubscriber
   def unsubscribe(channel)
     channel = channel.to_s
     sync { channels.delete(channel) }
-    notify(:unsubscribe, channel)
+    notify(:unsubscribe, channel) if started?
   end
 
   private
@@ -82,6 +100,14 @@ class DBSubscriber
   # Yields synchronizely
   def sync
     mutex.synchronize { yield }
+  end
+
+  # Creates new instance of subscription controller in a new thread and returns
+  # the thread
+  # @return [Thread]
+  #   thread with instance of subscripton controller
+  def launch_controller_thread
+    Thread.new { Controller.new(channels, control_channel) }
   end
 
   # Sends notification to channel with {control_channel} name and payload made
