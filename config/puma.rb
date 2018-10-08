@@ -15,3 +15,12 @@ puma_env = 'development' if puma_env.blank?
 environment puma_env
 
 preload_app!
+
+before_fork do
+  DBSubscriber.instance.shutdown
+  ActiveRecord::Base.connection_pool.disconnect!
+end
+
+on_worker_boot do
+  DBSubscriber.instance.start if DBSubscriber.instance.subscriptions?
+end
