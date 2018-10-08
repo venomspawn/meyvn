@@ -9,12 +9,35 @@ class CreateEventsCreationTrigger < ActiveRecord::Migration[5.2]
         execute <<~SQL
           CREATE FUNCTION events_creation_trigger() RETURNS trigger AS $$
             DECLARE
-              payload text;
+              city_name   text;
+              topic_title text;
+              payload     text;
             BEGIN
-              payload = json_build_object('city_id',  NEW.city_id,
-                                          'topic_id', NEW.topic_id,
-                                          'start',    NEW.start);
+              SELECT name
+                INTO city_name
+                FROM cities
+                WHERE id = NEW.city_id;
+
+              SELECT title
+                INTO topic_title
+                FROM topics
+                WHERE id = NEW.topic_id;
+
+              payload = json_build_object(
+                          'event_id',     NEW.id,
+                          'event_title',  NEW.title,
+                          'event_place',  NEW.place,
+                          'event_start',  NEW.start,
+                          'event_finish', NEW.finish,
+                          'creator_id',   NEW.creator_id,
+                          'city_name',    city_name,
+                          'topic_title',  topic_title,
+                          'city_id',      NEW.city_id,
+                          'topic_id',     NEW.topic_id
+                        );
+
               EXECUTE 'NOTIFY events_creation, ' || quote_literal(payload);
+
               RETURN NULL;
             END;
           $$ LANGUAGE plpgsql;
