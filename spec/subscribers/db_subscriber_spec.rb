@@ -67,6 +67,7 @@ RSpec.describe DBSubscriber do
       it 'should notify controller to shutdown' do
         expect(described_class::SQL::Builder)
           .to receive(:unlisten)
+          .at_least(:once)
           .and_call_original
         subject
         sleep(delay)
@@ -80,7 +81,7 @@ RSpec.describe DBSubscriber do
         it 'should notify controller to remove all of the subscriptions' do
           expect(described_class::SQL::Builder)
             .to receive(:unlisten)
-            .twice
+            .at_least(:twice)
             .and_call_original
           subject
           sleep(delay)
@@ -191,7 +192,7 @@ RSpec.describe DBSubscriber do
     end
   end
 
-  describe '#subscriptions' do
+  describe '#subscriptions?' do
     subject(:result) { instance.subscriptions? }
 
     let(:instance) { described_class.instance }
@@ -200,13 +201,13 @@ RSpec.describe DBSubscriber do
       subject { result }
 
       context 'when a subscription was added' do
-        before { instance.subscribe('channel') {} }
-
         it { is_expected.to be_truthy }
       end
 
       context 'when there are no subscriptions' do
-        before { instance.unsubscribe('channel') }
+        before do
+          instance.send(:channels).each_key(&instance.method(:unsubscribe))
+        end
 
         it { is_expected.to be_falsey }
       end
