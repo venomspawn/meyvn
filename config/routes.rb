@@ -13,8 +13,9 @@ Rails.application.routes.draw do
   end
 
   scope module: 'events' do
-    post 'events'     => 'creation#create'
-    get  'events'     => 'index_page#draw'
-    get  'events/new' => 'new_page#draw'
+    post 'events'        => 'creation#create'
+    get  'events'        => 'index_page#draw'
+    get  'events/new'    => 'new_page#draw'
+    get  'events/stream' => 'stream#stream'
   end
 end
