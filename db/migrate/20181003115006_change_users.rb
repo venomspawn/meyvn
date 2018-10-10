@@ -15,7 +15,7 @@ class ChangeUsers < ActiveRecord::Migration[5.2]
       users.belongs_to :filter_topic,
                        type:        :uuid,
                        index:       true,
-                       foreign_key: { to_table: :topics}
+                       foreign_key: { to_table: :topics }
 
       users.column :filter_start, :timestamp, index: true
     end
