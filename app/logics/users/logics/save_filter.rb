@@ -68,10 +68,10 @@ module Users
       # Template of SQL expression for user record updating
       UPDATE_SQL_TEMPLATE = <<-TEMPLATE.squish.freeze
         UPDATE "users"
-          SET "filter_city_id"  = %{filter_city_id},
-              "filter_topic_id" = %{filter_topic_id},
-              "filter_start"    = %{filter_start}
-          WHERE "id" = %{user_id}
+          SET "filter_city_id"  = %<filter_city_id>s,
+              "filter_topic_id" = %<filter_topic_id>s,
+              "filter_start"    = %<filter_start>s
+          WHERE "id" = %<user_id>s
       TEMPLATE
 
       # Returns SQL expression for user record updating

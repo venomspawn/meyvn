@@ -8,14 +8,17 @@ AllCops:
 Lint/AmbiguousBlockAssociation:
   Exclude:
     - spec/**/*_spec.rb
-
 Metrics/BlockLength:
   Exclude:
-    - db/migrations/*
+    - db/migrate/*
     - spec/**/*_spec.rb
     - spec/factories/**/*
     - spec/shared/**/*
     - Vagrantfile
+
+Metrics/MethodLength:
+  Exclude:
+    - db/migrate/*
 
 Naming/UncommunicativeMethodParamName:
   AllowedNames:

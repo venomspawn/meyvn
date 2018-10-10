@@ -1,4 +1,4 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 require 'rails_helper'
 
@@ -242,7 +242,7 @@ RSpec.describe Event, type: :model do
       topic_id
       update
     ]
-    it { is_expected.to respond_to(:id, :title, :update) }
+    it { is_expected.to respond_to(*messages) }
   end
 
   describe '#city_id' do

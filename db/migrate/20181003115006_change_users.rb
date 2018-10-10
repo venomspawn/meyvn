@@ -1,4 +1,4 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 # Class of migrations which alter table of users to add fields with information
 # of stored events filter
@@ -15,7 +15,7 @@ class ChangeUsers < ActiveRecord::Migration[5.2]
       users.belongs_to :filter_topic,
                        type:        :uuid,
                        index:       true,
-                       foreign_key: { to_table: :topics}
+                       foreign_key: { to_table: :topics }
 
       users.column :filter_start, :timestamp, index: true
     end

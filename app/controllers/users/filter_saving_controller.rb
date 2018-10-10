@@ -18,7 +18,7 @@ module Users
     # Message about invalid parameters
     INVALID_PARAMETERS = 'Invalid parameters'
 
-    rescue_from JSON::Schema::ValidationError do |error|
+    rescue_from JSON::Schema::ValidationError do
       render_events_with_alert(INVALID_PARAMETERS)
     end
 

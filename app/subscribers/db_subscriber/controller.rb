@@ -81,8 +81,8 @@ class DBSubscriber
       loop do
         connection.wait_for_notify do |channel, _, payload|
           next inform(channel, payload) unless channel == control_channel
-          action, _ = execute(payload)
-          return if action == :shutdown
+          action, = execute(payload)
+          return action if action == :shutdown
         end
       end
     end
@@ -95,7 +95,7 @@ class DBSubscriber
     #   payload
     def inform(channel, payload)
       channels[channel].call(payload)
-    rescue StandardError => e
+    rescue StandardError
       nil
     end
 

@@ -115,7 +115,7 @@ module Events
     def extract_user_ids
       User.connection_pool.with_connection do |connection|
         result = connection.execute(user_ids_arel.to_sql)
-        result.ntuples.times.map { |i| result.getvalue(i, 0) }
+        Array.new(result.ntuples) { |i| result.getvalue(i, 0) }
       ensure
         result&.clear
       end

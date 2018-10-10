@@ -13,7 +13,7 @@ module Events
 
     # Handles GET-request with `/events/stream` path
     def stream
-      set_response_headers(HEADERS)
+      setup_response_headers(HEADERS)
       register
       sleep_and_ping while registered?
     rescue StandardError
@@ -28,7 +28,7 @@ module Events
     # array
     # @param [Hash] headers
     #   associative array of headers
-    def set_response_headers(headers)
+    def setup_response_headers(headers)
       headers.each { |header, value| response.headers[header] = value }
     end
 
