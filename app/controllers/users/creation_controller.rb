@@ -6,7 +6,7 @@ module Users
     # Message about invalid parameters
     INVALID_PARAMETERS = 'Invalid parameters'
 
-    rescue_from JSON::Schema::ValidationError do |error|
+    rescue_from JSON::Schema::ValidationError do
       render_new_user(User.new, INVALID_PARAMETERS)
     end
 
