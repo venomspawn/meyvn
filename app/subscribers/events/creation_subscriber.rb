@@ -136,6 +136,7 @@ module Events
     #   resulting AREL expression
     def user_ids_arel
       SELECT_USERS_ID
+        .dup
         .where(users_filter_city_id_condition)
         .where(users_filter_topic_id_condition)
         .where(users_filter_start_condition)
