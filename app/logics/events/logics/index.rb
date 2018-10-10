@@ -66,7 +66,7 @@ module Events
       #   resulting string
       def start
         Time.parse(filter[:start]).utc.strftime(TIME_FORMAT)
-      rescue
+      rescue StandardError
         Time.now.utc.strftime(TIME_FORMAT)
       end
 
