@@ -82,7 +82,7 @@ class DBSubscriber
         connection.wait_for_notify do |channel, _, payload|
           next inform(channel, payload) unless channel == control_channel
           action, = execute(payload)
-          return if action == :shutdown
+          return action if action == :shutdown
         end
       end
     end
