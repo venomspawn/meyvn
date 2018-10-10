@@ -39,7 +39,7 @@ module Events
     def handle
       user_ids = extract_user_ids
       return if user_ids.blank?
-      StreamsPool.instance.stream_data(user_ids, payload)
+      StreamsPool.instance.stream_data(user_ids, sanitized_payload)
     rescue StandardError
       nil
     end
@@ -50,6 +50,34 @@ module Events
     # @return [String]
     #   notification payload
     attr_reader :payload
+
+    # Returns JSON-string of payload with sanitized values
+    # @return [String]
+    #   resulting JSON-string
+    def sanitized_payload
+      sanitized_event = event.dup
+      sanitize_time(sanitized_event, :event_start)
+      sanitize_time(sanitized_event, :event_finish)
+      sanitized_event.to_json
+    end
+
+    # Date and time format for values of event start and finish
+    TIME_FORMAT = '%F %H:%M'
+
+    # Extracts, parses, and adjusts format to {TIME_FORMAT} of value in the
+    # provided associative array with provided key. Does nothing if an error
+    # appears.
+    # @param [Hash] hash
+    #   associative array
+    # @param [Object] key
+    #   key
+    def sanitize_time(hash, key)
+      value = hash[key]
+      value = Time.parse(value)
+      hash[key] = value.strftime(TIME_FORMAT)
+    rescue StandardError
+      nil
+    end
 
     # Returns associative array of created event data recovered from
     # JSON-string of {payload}

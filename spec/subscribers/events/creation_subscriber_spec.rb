@@ -13,13 +13,16 @@ RSpec.describe Events::CreationSubscriber do
     subject { described_class.handle(payload) }
 
     let(:payload) { event.to_json }
-    let(:event) { { event_start: Time.now } }
+    let(:event) { { event_start: time } }
+    let(:time) { Time.now }
+    let(:sanitized_payload) { { event_start: sanitized_time }.to_json }
+    let(:sanitized_time) { time.strftime('%F %H:%M') }
     let(:user) { create(:user) }
 
     it 'should send payload to streams tagged with user identifiers' do
       expect(StreamsPool.instance)
         .to receive(:stream_data)
-        .with([user.id], payload)
+        .with([user.id], sanitized_payload)
       subject
     end
 
@@ -30,7 +33,7 @@ RSpec.describe Events::CreationSubscriber do
       it 'shouldn\'t send payload to streams tagged with the identifiers' do
         expect(StreamsPool.instance)
           .to receive(:stream_data)
-          .with([other_user.id], payload)
+          .with([other_user.id], sanitized_payload)
         subject
       end
     end
