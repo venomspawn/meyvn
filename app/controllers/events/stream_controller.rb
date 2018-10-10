@@ -14,8 +14,10 @@ module Events
     # Handles GET-request with `/events/stream` path
     def stream
       set_response_headers(HEADERS)
-      StreamsPool.instance.register(response.stream, current_user.id)
-      sleep(1) while StreamsPool.instance.include?(response.stream)
+      register
+      sleep_and_ping while registered?
+    rescue StandardError
+      nil
     ensure
       response.stream.close
     end
@@ -28,6 +30,30 @@ module Events
     #   associative array of headers
     def set_response_headers(headers)
       headers.each { |header, value| response.headers[header] = value }
+    end
+
+    # Registers response stream in the pool
+    def register
+      StreamsPool.instance.register(response.stream, current_user.id)
+    end
+
+    # Returns if response stream is registered or not
+    # @return [Boolean]
+    #   if response stream is registered or not
+    def registered?
+      StreamsPool.instance.include?(response.stream)
+    end
+
+    # String with ping message
+    PING_MESSAGE = "\n\n"
+
+    # Sleep delay in seconds
+    DELAY = 1
+
+    # Sleep for {DELAY} seconds and pings connection
+    def sleep_and_ping
+      sleep(DELAY)
+      response.stream.write(PING_MESSAGE)
     end
   end
 end
