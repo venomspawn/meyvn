@@ -17,4 +17,9 @@ RSpec.describe 'Routing for events REST API', type: :routing do
     expect(get '/events/new')
       .to route_to(controller: 'events/new_page', action: 'draw')
   end
+
+  it 'routes GET /events/stream to events/stream#stream' do
+    expect(get '/events/stream')
+      .to route_to(controller: 'events/stream', action: 'stream')
+  end
 end

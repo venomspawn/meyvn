@@ -14,6 +14,8 @@ puma_env = ENV['RAILS_ENV']
 puma_env = 'development' if puma_env.blank?
 environment puma_env
 
+force_shutdown_after :immediately
+
 preload_app!
 
 before_fork do

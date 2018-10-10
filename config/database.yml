@@ -5,6 +5,7 @@ default: &default
   password: "<%= ENV['MEYVN_DB_PASS'] %>"
   host: <%= ENV['MEYVN_DB_HOST'] %>
   database: <%= ENV['MEYVN_DB_NAME'] %>
+  pool: 20
 
 development:
   <<: *default
