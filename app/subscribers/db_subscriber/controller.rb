@@ -95,7 +95,7 @@ class DBSubscriber
     #   payload
     def inform(channel, payload)
       channels[channel].call(payload)
-    rescue StandardError => e
+    rescue StandardError
       nil
     end
 
