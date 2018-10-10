@@ -76,3 +76,23 @@
     </tr>
   <% end %>
 </table>
+
+<script>
+  var url = "<%= events_stream_path %>";
+  var eventSource = new EventSource(url);
+
+  eventSource.onmessage = function(message) {
+    if (typeof message.data == 'undefined') {
+      return;
+    }
+
+    var event = JSON.parse(message.data);
+    var table = document.getElementById("events");
+    var row = table.insertRow(table.rows.length);
+    var keys = <%= raw columns.each_key.map(&:to_s) %>;
+
+    for (var i in keys) {
+      row.insertCell(i).innerHTML = event[keys[i]];
+    }
+  };
+</script>
