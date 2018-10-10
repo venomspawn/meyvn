@@ -1,4 +1,4 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 # Class of migrations which alter table of users to add fields with information
 # of stored events filter

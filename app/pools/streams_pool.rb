@@ -1,4 +1,4 @@
-# frozen_string_literal
+# frozen_string_literal: true
 
 # Class of pools which manage stream-like objects tagged with user identifiers
 class StreamsPool < Pool

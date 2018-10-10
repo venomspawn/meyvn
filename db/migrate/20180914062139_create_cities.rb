@@ -1,4 +1,4 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 # Class of migrations which create table of cities
 class CreateCities < ActiveRecord::Migration[5.2]

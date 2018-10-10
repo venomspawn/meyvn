@@ -1,4 +1,4 @@
-# frozen_string_literals: true
+# frozen_string_literal: true
 
 # Class of migrations which add a trigger on events creation
 class CreateEventsCreationTrigger < ActiveRecord::Migration[5.2]
