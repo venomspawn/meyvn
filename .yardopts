@@ -1,0 +1,6 @@
+--readme README.md
+--title 'MEYVN Test Service Documentation'
+--charset utf-8
+--markup markdown
+--private
+- README.md CHANGELOG.md LICENSE

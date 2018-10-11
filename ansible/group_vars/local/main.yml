@@ -1,0 +1,30 @@
+---
+apt_packages:
+  - make
+  - g++
+  - libpq-dev
+  - mc
+  - vim
+  - ruby2.5-dev
+
+ruby_version: 2.5
+
+postgresql_databases:
+  - name: meyvn
+    owner: user_meyvn
+  - name: meyvn_test
+    owner: user_meyvn
+
+postgresql_users:
+  - name: user_meyvn
+    pass: 123456
+
+postgresql_user_privileges:
+  - name: user_meyvn
+    db: meyvn
+    priv: "ALL"
+    role_attr_flags: "SUPERUSER"
+  - name: user_meyvn
+    db: meyvn_test
+    priv: "ALL"
+    role_attr_flags: "SUPERUSER"

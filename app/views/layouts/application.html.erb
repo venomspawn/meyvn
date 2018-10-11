@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Implementation of Meyvn's test service</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+  </head>
+
+  <style>
+    table#header {
+      border: 0px;
+    }
+
+    table#header td {
+      border: 0px;
+    }
+  </style>
+
+  <% if current_user.nil? %>
+    <table id="header">
+      <tr>
+        <td><%= button_to 'Log In', login_url, method: :get %></td>
+        <td><%= button_to 'Sign Up', users_new_url, method: :get %></td>
+      </tr>
+    </table>
+  <% else %>
+    <table id="header">
+      <tr>
+        <td><%= current_user.email %></td>
+        <td><%= button_to 'Events', events_url, method: :get %></td>
+        <td><%= button_to 'New Event', events_new_url, method: :get %></td>
+        <td><%= button_to 'Log Out', logout_url %></td>
+      </tr>
+    </table>
+  <% end %>
+
+  <% if notice %>
+    <%= notice %>
+  <% end %>
+
+  <% if alert %>
+    <%= alert %>
+  <% end %>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>
