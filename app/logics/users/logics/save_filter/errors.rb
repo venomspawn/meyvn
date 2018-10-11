@@ -9,6 +9,7 @@ module Users
         module User
           # Class of errors which signal that user record isn\'t found
           class NotFound < ActiveRecord::RecordNotFound
+            # Message about that user record isn't found
             MESSAGE = 'User record isn\'t found'
 
             # Initializes instance
@@ -23,6 +24,7 @@ module Users
         module FilterValues
           # Class of errors which signal that filter values are invalid
           class Invalid < ActiveRecord::StatementInvalid
+            # Message about that filter values are invalid
             MESSAGE = 'Filter values are invalid'
 
             # Initializes instance

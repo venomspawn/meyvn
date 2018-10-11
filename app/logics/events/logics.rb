@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Namespace of classes and modules which manage with events
 module Events
   # Provides business logic of event management
   module Logics
