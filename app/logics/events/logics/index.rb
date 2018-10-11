@@ -8,27 +8,15 @@ module Events
       # @return [Array<Hash>]
       #   resulting array
       def index
-        result = connection.execute(sql)
-        result.map(&:symbolize_keys!)
-      ensure
-        result&.clear
+        Event.connection_pool.with_connection do |connection|
+          result = connection.execute(sql.to_sql)
+          result.map(&:symbolize_keys!)
+        ensure
+          result&.clear
+        end
       end
 
       private
-
-      # Returns connection with database
-      # @return [ActiveRecord::ConnectionAdapters::PostgreSQLAdapter]
-      #   the connection
-      def connection
-        @connection ||= Event.connection
-      end
-
-      # Returns quoted string ready to use in SQL expression
-      # @return [String]
-      #   resulting string
-      def quote(obj)
-        connection.quote_string(obj.to_s)
-      end
 
       # Empty associative array
       EMPTY = {}.freeze
@@ -70,31 +58,53 @@ module Events
         Time.now.utc.strftime(TIME_FORMAT)
       end
 
+      # Qualified name of `events` table
+      EVENTS = Event.arel_table.freeze
+
       # Qualified name of `title` column of `events` table aliased as
       # `event_title`
-      EVENT_TITLE = '"events"."title" AS "event_title"'
+      EVENT_TITLE = EVENTS[:title].as('event_title').freeze
 
       # Qualified name of `place` column of `events` table aliased as
       # `event_place`
-      EVENT_PLACE = '"events"."place" AS "event_place"'
+      EVENT_PLACE = EVENTS[:place].as('event_place').freeze
+
+      # Format of string values of timestamp fields
+      TIMESTAMP_FORMAT = Arel::Nodes::SqlLiteral.new('\'YYYY-MM-DD HH24:MI\'')
 
       # Expression to extract `start` column of `events` table aliased as
       # `event_start`
       EVENT_START =
-        'to_char("events"."start", \'YYYY-MM-DD HH24:MI\') AS "event_start"'
+        Arel::Nodes::NamedFunction
+        .new('to_char', [EVENTS[:start], TIMESTAMP_FORMAT], 'event_start')
+        .freeze
 
       # Expression to extract `finish` column of `events` table aliased as
       # `event_finish`
       EVENT_FINISH =
-        'to_char("events"."finish", \'YYYY-MM-DD HH24:MI\') AS "event_finish"'
+        Arel::Nodes::NamedFunction
+        .new('to_char', [EVENTS[:finish], TIMESTAMP_FORMAT], 'event_finish')
+        .freeze
+
+      # Qualified name of `cities` table
+      CITIES = City.arel_table.freeze
+
+      # Qualified name of `id` column of `cities` table
+      CITIES_ID = CITIES[:id]
 
       # Qualified name of `name` column of `cities` table aliased as
       # `city_name`
-      CITY_NAME = '"cities"."name" AS "city_name"'
+      CITY_NAME = CITIES[:name].as('city_name')
+
+      # Qualified name of `topics` table
+      TOPICS = Topic.arel_table.freeze
+
+      # Qualified name of `id` column of `topics` table
+      TOPICS_ID = TOPICS[:id]
 
       # Qualified name of `title` column of `topics` table aliased as
       # `topic_title`
-      TOPIC_TITLE = '"topics"."title" AS "topic_title"'
+      TOPIC_TITLE = TOPICS[:title].as('topic_title')
 
       # Array of expressions to select
       FIELD_EXPRESSIONS = [
@@ -106,72 +116,37 @@ module Events
         TOPIC_TITLE
       ].freeze
 
-      # String with field expressions delimeterd by colon
-      FIELDS = FIELD_EXPRESSIONS.join(', ')
+      # Expression of joined tables
+      JOINED_TABLES =
+        EVENTS
+        .join(CITIES)
+        .on(EVENTS[:city_id].eq(CITIES_ID))
+        .join(TOPICS)
+        .on(EVENTS[:topic_id].eq(TOPICS_ID))
+        .freeze
 
-      # String with expression of joined tables
-      JOINED_TABLES = <<-EXPRESSION.squish.freeze
-        "events"
-        INNER JOIN "cities" ON "events"."city_id" = "cities"."id"
-        INNER JOIN "topics" ON "events"."topic_id" = "topics"."id"
-      EXPRESSION
+      # SQL statement for information extraction
+      SQL =
+        JOINED_TABLES
+        .project(*FIELD_EXPRESSIONS)
+        .order(EVENTS[:start].asc)
+        .freeze
 
-      # Template of SQL statement for information extraction
-      SQL_TEMPLATE = <<-SQL_TEMPLATE.squish.freeze
-        SELECT #{FIELDS}
-          FROM #{JOINED_TABLES}
-          WHERE %s
-          ORDER BY "events"."start"
-      SQL_TEMPLATE
-
-      # Returns string with SQL statement for information extraction
-      # @return [String]
-      #   resulting string
+      # Returns SQL statement for information extraction
+      # @return [Arel::SelectManager]
+      #   resulting statement
       def sql
-        format(SQL_TEMPLATE, conditions)
+        conditions.reduce(SQL.dup) { |memo, condition| memo.where(condition) }
       end
 
-      # Template of condition on city identifier
-      CITY_ID_CONDITION_TEMPLATE = '"cities"."id" = \'%s\''
-
-      # Returns string with condition on city identifier or `nil` if city
-      # identifier is absent or blank
-      # @return [NilClass, String]
-      #   resulting value
-      def city_id_condition
-        return unless city_id.present?
-        format(CITY_ID_CONDITION_TEMPLATE, quote(city_id))
-      end
-
-      # Template of condition on topic identifier
-      TOPIC_ID_CONDITION_TEMPLATE = '"topics"."id" = \'%s\''
-
-      # Returns string with condition on topic identifier or `nil` if topic
-      # identifier is absent or blank
-      # @return [NilClass, String]
-      #   resulting value
-      def topic_id_condition
-        return unless topic_id.present?
-        format(TOPIC_ID_CONDITION_TEMPLATE, quote(topic_id))
-      end
-
-      # Template of condition on events start date and time
-      START_CONDITION_TEMPLATE = '"events"."start" >= \'%s\''
-
-      # Returns string with condition on events start date and time
-      # @return [String]
-      #   resulting string
-      def start_condition
-        format(START_CONDITION_TEMPLATE, quote(start))
-      end
-
-      # Returns string with conditions
-      # @return [String]
-      #   resulting string
+      # Returns array of conditions on extraction
+      # @return [Array]
+      #   resulting array
       def conditions
-        [start_condition, city_id_condition, topic_id_condition]
-          .compact
-          .join(' AND ')
+        [EVENTS[:start].gteq(start)].tap do |array|
+          array << CITIES_ID.eq(city_id) if city_id.present?
+          array << TOPICS_ID.eq(topic_id) if topic_id.present?
+        end
       end
     end
   end
