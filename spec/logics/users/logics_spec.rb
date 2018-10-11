@@ -239,16 +239,6 @@ RSpec.describe Users::Logics do
       end
     end
 
-    context 'when someone injects nasty SQL-code' do
-      let(:user_id) { "#{user.id}'; DELETE FROM users WHERE 1 = 1 OR id = '" }
-      let(:user) { create(:user) }
-
-      it 'should raise ActiveRecord::StatementInvalid' do
-        expect { subject }
-          .to raise_error(ActiveRecord::StatementInvalid)
-      end
-    end
-
     context 'when user record isn\'t found' do
       let(:user_id) { create(:uuid) }
 
