@@ -10,9 +10,9 @@ The following technologies are used:
 *   [Puma](https://github.com/puma/puma) as HTTP-servers;
 *   [Rails](https://github.com/rails/rails) as a web-application framework;
 *   [RSpec](https://github.com/rspec/rspec) for tests definitions and
-    launching;
-*   and also some other awesome libraries, which names can be found in `Gemfile`
-    of the project.
+    launching.
+
+Names of all used libaries can be found in `Gemfile` of the project.
 
 ## Usage
 
@@ -42,7 +42,7 @@ terminal of virtual machine:
 
 The service provides very simple web-interface, that can be accessed in a
 web-browser by typing `localhost:8080` in its address bar after service launch.
-Basically the interface consists of two parts: top header with menu buttons,
+Basically, the interface consists of two parts: top header with menu buttons,
 which also includes informational messages, and main form, that can be log in
 form, sign up form, events index form, and event creation form.
 
@@ -110,8 +110,17 @@ verified via the following.
 6.  Execute the following command in the console to create new event record:
 
     ```
-    INSERT INTO events (title, place, start, finish, city_id, topic_id, creator_id) VALUES ('psql event', 'psql', '2018-12-12 12:12', '2018-12-12 13:12', '<city_id>', '<topic_id>', '<user_id>');
-
+    INSERT
+      INTO events (title, place, start, finish, city_id, topic_id, creator_id)
+      VALUES (
+        'psql event',
+        'psql',
+        '2018-12-12 12:12',
+        '2018-12-12 13:12',
+        '<city_id>',
+        '<topic_id>',
+        '<user_id>'
+      );
     ```
 
     where `<city_id>`, `<topic_id>`, `<user_id>` are values chosen in 5.
