@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Namespace of classes and modules which manage with users
 module Users
   # Provides business logic of user management
   module Logics
